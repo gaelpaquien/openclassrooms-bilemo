@@ -28,6 +28,7 @@ class ProductBrandFixtures extends Fixture
             }
 
             $this->addReference('product-brand-' . $i, $productBrand);
+
             $manager->persist($productBrand);
         }
 

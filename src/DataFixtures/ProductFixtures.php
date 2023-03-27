@@ -18,7 +18,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
             $product = new Product();
             $product->setModel($this->getReference('product-model-' . $i));
             $product->setName($this->getReference('product-model-' . $i)->getName());
-            $product->setDescription($faker->text(200));
+            $product->setDescription($faker->text(100));
             $product->setPrice(rand(350, 1100));
             $manager->persist($product);
         }

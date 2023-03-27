@@ -34,7 +34,7 @@ class ProductModelFixtures extends Fixture implements DependentFixtureInterface
                     $name = 'iPhone 11 Pro';
                     $brand = 0;
                     $screen_size = '5.8"';
-                    $technical_details = null;
+                    $technical_details = '5.8 pouces, 128 Go, 4G, 5G, 12 Mpx, iOS 14';
                     break;
                 case 4:
                     $name = 'Samsung Galaxy S21';
@@ -52,7 +52,7 @@ class ProductModelFixtures extends Fixture implements DependentFixtureInterface
                     $name = 'Samsung Galaxy S20';
                     $brand = 1;
                     $screen_size = '6.2"';
-                    $technical_details = null;
+                    $technical_details = '6.2 pouces, 128 Go, 4G, 5G, 12 Mpx, Android 11';
                     break;
                 case 7:
                     $name = 'Huawei P40 Pro';
@@ -70,7 +70,7 @@ class ProductModelFixtures extends Fixture implements DependentFixtureInterface
                     $name = 'Huawei P20 Pro';
                     $brand = 2;
                     $screen_size = '6.1"';
-                    $technical_details = null;
+                    $technical_details = '6.1 pouces, 128 Go, 4G, 5G, 12 Mpx, Android 10';
                     break;
                 default:
                     throw new \Exception('Invalid data in ProductModelFixtures');

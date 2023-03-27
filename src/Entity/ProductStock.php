@@ -22,7 +22,7 @@ class ProductStock
     private ?ProductColor $color = null;
 
     #[ORM\Column]
-    private ?int $count = null;
+    private ?int $quantity = null;
 
     public function getId(): ?int
     {
@@ -53,14 +53,14 @@ class ProductStock
         return $this;
     }
 
-    public function getCount(): ?int
+    public function getQuantity(): ?int
     {
-        return $this->count;
+        return $this->quantity;
     }
 
-    public function setCount(int $count): self
+    public function setQuantity(int $quantity): self
     {
-        $this->count = $count;
+        $this->quantity = $quantity;
 
         return $this;
     }

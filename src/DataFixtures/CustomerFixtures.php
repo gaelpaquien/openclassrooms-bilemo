@@ -12,23 +12,27 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = Faker\Factory::create('fr_FR');
-
-        for ($i = 0; $i < 5; $i++) {
-            $customer = new Customer();
-            $customer->setCompany($this->getReference('company-orange'));
-            $customer->setUsername($faker->userName());
-            $customer->setEmail($customer->getUsername() . '@email.fr');
-            $customer->setPassword($faker->password());
-            if ($i % 2 === 0) {
-                $customer->setPhoneNumber($faker->phoneNumber());
-            }
-            $this->addReference('customer-' . $i, $customer);
-
-            $manager->persist($customer);
+        for ($i = 0; $i < 20; $i++) {
+            $this->createCustomer($i, 'company-0', $manager);
         }
 
         $manager->flush();
+    }
+
+    public function createCustomer(int $customerId, string $companyReference, ObjectManager $manager)
+    {
+        $faker = Faker\Factory::create('fr_FR');
+
+        $customer = new Customer();
+        $customer->setCompany($this->getReference($companyReference));
+        $customer->setUsername($faker->userName());
+        $customer->setEmail($customer->getUsername() . '@email.fr');
+        $customer->setPassword($faker->password());
+        $customer->setPhoneNumber($faker->phoneNumber());
+
+        $this->addReference('customer-' . $customerId, $customer);
+
+        $manager->persist($customer);
     }
 
     public function getDependencies(): array

@@ -25,7 +25,7 @@ class ProductModel
     #[ORM\Column(length: 10)]
     private ?string $screen_size = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $technical_details = null;
 
     #[ORM\OneToMany(mappedBy: 'model', targetEntity: ProductStock::class, orphanRemoval: true)]

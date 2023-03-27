@@ -10,13 +10,18 @@ class CompanyFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $company = new Company();
-        $company->setName('Orange');
-
-        $this->addReference('company-orange', $company);
-
-        $manager->persist($company);
+        $this->createCompany(0, 'Telecom Paris', $manager);
 
         $manager->flush();
+    }
+
+    public function createCompany(int $countCompany, string $name, ObjectManager $manager) 
+    {
+        $company = new Company();
+        $company->setName($name);
+
+        $this->addReference('company-' . $countCompany, $company);
+
+        $manager->persist($company);
     }
 }

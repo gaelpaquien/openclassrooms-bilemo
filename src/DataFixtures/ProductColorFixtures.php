@@ -35,6 +35,7 @@ class ProductColorFixtures extends Fixture
             }
 
             $this->addReference('product-color-' . $i, $productColor);
+
             $manager->persist($productColor);
         }
 

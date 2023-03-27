@@ -1,9 +1,10 @@
 ###> MacOS ###
 .DS_Store
-###> MacOS ###
+###< MacOS ###
 
 ###> npm ###
 /node_modules/
+###< npm ###
 
 ###> symfony/framework-bundle ###
 /.env.local

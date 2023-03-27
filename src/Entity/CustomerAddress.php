@@ -24,7 +24,7 @@ class CustomerAddress
     private ?string $city = null;
 
     #[ORM\Column]
-    private ?int $postal_code = null;
+    private ?string $postal_code = null;
 
     #[ORM\Column(length: 255)]
     private ?string $address = null;

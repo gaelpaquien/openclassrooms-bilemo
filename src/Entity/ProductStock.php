@@ -13,9 +13,9 @@ class ProductStock
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'productStocks')]
+    #[ORM\ManyToOne(inversedBy: 'product')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ProductModel $model = null;
+    private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'productStocks')]
     #[ORM\JoinColumn(nullable: false)]
@@ -29,14 +29,14 @@ class ProductStock
         return $this->id;
     }
 
-    public function getModel(): ?ProductModel
+    public function getProduct(): ?Product
     {
-        return $this->model;
+        return $this->product;
     }
 
-    public function setModel(?ProductModel $model): self
+    public function setProduct(?Product $product): self
     {
-        $this->model = $model;
+        $this->product = $product;
 
         return $this;
     }

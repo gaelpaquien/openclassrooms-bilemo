@@ -24,7 +24,7 @@ class ProductController extends AbstractController
 
         $jsonProductList = $serializer->serialize($productList, 'json', [
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => $circularReferenceHandler,
-            AbstractNormalizer::IGNORED_ATTRIBUTES => ['brand', 'model'],
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['brand'],
         ]);
 
         return new JsonResponse($jsonProductList, Response::HTTP_OK, [], true);
@@ -39,7 +39,7 @@ class ProductController extends AbstractController
 
         $jsonProduct = $serializer->serialize($product, 'json', [
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => $circularReferenceHandler,
-            AbstractNormalizer::IGNORED_ATTRIBUTES => ['brand', 'model'],
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['brand'],
         ]);
 
         return new JsonResponse($jsonProduct, Response::HTTP_OK, [], true);

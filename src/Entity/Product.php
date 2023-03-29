@@ -25,15 +25,21 @@ class Product
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?ProductModel $model = null;
-
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price = null;
 
     #[ORM\Column(length: 4, options: ['default' => 'EUR'])]
     private ?string $price_currency = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProductBrand $brand = null;
+
+    #[ORM\Column(length: 10)]
+    private ?string $screen_size = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $technical_details = null;
 
     public function __construct()
     {
@@ -67,18 +73,6 @@ class Product
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getModel(): ?ProductModel
-    {
-        return $this->model;
-    }
-
-    public function setModel(?ProductModel $model): self
-    {
-        $this->model = $model;
 
         return $this;
     }
@@ -127,6 +121,42 @@ class Product
     public function setUpdatedAt(\DateTimeImmutable $updated_at): self
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getBrand(): ?ProductBrand
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?ProductBrand $brand): self
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getScreenSize(): ?string
+    {
+        return $this->screen_size;
+    }
+
+    public function setScreenSize(string $screen_size): self
+    {
+        $this->screen_size = $screen_size;
+
+        return $this;
+    }
+
+    public function getTechnicalDetails(): ?string
+    {
+        return $this->technical_details;
+    }
+
+    public function setTechnicalDetails(string $technical_details): self
+    {
+        $this->technical_details = $technical_details;
 
         return $this;
     }

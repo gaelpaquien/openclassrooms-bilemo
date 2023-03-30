@@ -22,7 +22,9 @@ class ProductController extends AbstractController
     #[Route('/api/products/', name: 'product_list', methods: ['GET'])]
     public function getAllProducts(ProductRepository $productRepository): JsonResponse
     {
-        return $this->apiService->getRoutes($productRepository->findAll(), ['product:read']);
+        $products = $productRepository->findAll();
+
+        return $this->apiService->getRoutes($products, ['product:read']);
     }
 
     #[Route('/api/products/{id}', name: 'product_detail', methods: ['GET'])]

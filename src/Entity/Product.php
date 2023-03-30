@@ -7,6 +7,7 @@ use App\Entity\Trait\UpdatedAtTrait;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -17,28 +18,36 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('product:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 100, unique: true)]
+    #[Groups('product:read')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('product:read')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups('product:read')]
     private ?string $price = null;
 
     #[ORM\Column(length: 4, options: ['default' => 'EUR'])]
+    #[Groups('product:read')]
     private ?string $price_currency = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('product:read')]
     private ?ProductBrand $brand = null;
 
     #[ORM\Column(length: 10)]
+    #[Groups('product:read')]
     private ?string $screen_size = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('product:read')]
     private ?string $technical_details = null;
 
     public function __construct()

@@ -28,7 +28,10 @@ class APIService {
             }
         }
 
-        $options = ['groups' => $groups];
+        $options = [
+            'groups' => $groups,
+            'skip_null_values' => true,
+        ];
         try {
             $jsonResponse = $this->serializer->serialize($object, 'json', $options);
         } catch (\Exception $e) {

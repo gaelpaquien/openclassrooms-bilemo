@@ -14,7 +14,6 @@ class ProductBrand
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('product:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, unique: true)]

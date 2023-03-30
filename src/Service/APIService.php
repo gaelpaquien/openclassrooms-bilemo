@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,9 +13,12 @@ class APIService {
 
     private SerializerInterface $serializer;
 
-    public function __construct(SerializerInterface $serializer)
+    private EntityManagerInterface $em;
+
+    public function __construct(SerializerInterface $serializer, EntityManagerInterface $em)
     {
         $this->serializer = $serializer;
+        $this->em = $em;
     }
 
     public function getRoutes(mixed $object, array $groups): JsonResponse
@@ -41,5 +46,17 @@ class APIService {
         return new JsonResponse($jsonResponse, Response::HTTP_OK, [
             'Content-Type' => 'application/json'
         ], true);
+    }
+
+    public function deleteRoutes(object $object): JsonResponse
+    {
+        if (!is_object($object)) {
+            throw new \InvalidArgumentException('The object must be an object');
+        }
+
+        $this->em->remove($object);
+        $this->em->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

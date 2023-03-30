@@ -8,6 +8,7 @@ use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
@@ -18,25 +19,31 @@ class Customer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('customer:read')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'customers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('customer:read')]
     private ?Company $company = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups('customer:read')]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Groups('customer:read')]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups('customer:read')]
     private ?string $phone_number = null;
 
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerAddress::class, orphanRemoval: true)]
+    #[Groups('customer:read')]
     private Collection $customerAddresses;
 
     public function __construct()

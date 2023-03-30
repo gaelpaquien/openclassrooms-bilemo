@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Customer;
-use App\Repository\CustomerAddressRepository;
 use App\Repository\CustomerRepository;
 use App\Service\APIService;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -21,7 +20,7 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/api/companies/{companyId}/customers', name: 'customer_list', methods: ['GET'])]
-    public function getAllCustomers(CustomerRepository $customerRepository, int $companyId, CustomerAddressRepository $customerAddress): JsonResponse
+    public function getAllCustomers(CustomerRepository $customerRepository, int $companyId): JsonResponse
     {
         $customers = $customerRepository->findBy(['company' => $companyId]);
 

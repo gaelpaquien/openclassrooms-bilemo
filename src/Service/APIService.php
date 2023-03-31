@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,7 +20,12 @@ class APIService {
         $this->em = $em;
     }
 
-    public function getRoutes(mixed $object, array $groups): JsonResponse
+    public function post(): JsonResponse
+    {
+        return new JsonResponse(null, Response::HTTP_CREATED);
+    }
+
+    public function get(mixed $object, array $groups): JsonResponse
     {
         if (!is_array($object) && !is_object($object)) {
             throw new \InvalidArgumentException('The object must be an array or an object');
@@ -37,6 +41,7 @@ class APIService {
             'groups' => $groups,
             'skip_null_values' => true,
         ];
+
         try {
             $jsonResponse = $this->serializer->serialize($object, 'json', $options);
         } catch (\Exception $e) {
@@ -48,7 +53,7 @@ class APIService {
         ], true);
     }
 
-    public function deleteRoutes(object $object): JsonResponse
+    public function delete(object $object): JsonResponse
     {
         if (!is_object($object)) {
             throw new \InvalidArgumentException('The object must be an object');

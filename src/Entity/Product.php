@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Entity\Trait\CreatedAtTrait;
 use App\Entity\Trait\UpdatedAtTrait;
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -25,6 +27,11 @@ class Product
     #[Groups('product:read')]
     private ?string $name = null;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups('product:read')]
+    private ?ProductBrand $brand = null;
+
     #[ORM\Column(length: 255)]
     #[Groups('product:read')]
     private ?string $description = null;
@@ -37,24 +44,21 @@ class Product
     #[Groups('product:read')]
     private ?string $price_currency = null;
 
-    #[ORM\ManyToOne(inversedBy: 'products')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductDetail::class)]
     #[Groups('product:read')]
-    private ?ProductBrand $brand = null;
+    private Collection $productDetails;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductStock::class, orphanRemoval: true)]
     #[Groups('product:read')]
-    private ?string $screen_size = null;
-
-    #[ORM\Column(length: 255)]
-    #[Groups('product:read')]
-    private ?string $technical_details = null;
+    private Collection $productStocks;
 
     public function __construct()
     {
+        $this->price_currency = 'EUR';
         $this->created_at = new \DateTimeImmutable();
         $this->updated_at = new \DateTimeImmutable();
-        $this->price_currency = 'EUR';
+        $this->productDetails = new ArrayCollection();
+        $this->productStocks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,6 +74,18 @@ class Product
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+        public function getBrand(): ?ProductBrand
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?ProductBrand $brand): self
+    {
+        $this->brand = $brand;
 
         return $this;
     }
@@ -134,38 +150,62 @@ class Product
         return $this;
     }
 
-    public function getBrand(): ?ProductBrand
+    /**
+     * @return Collection<int, ProductDetail>
+     */
+    public function getProductDetails(): Collection
     {
-        return $this->brand;
+        return $this->productDetails;
     }
 
-    public function setBrand(?ProductBrand $brand): self
+    public function addProductDetail(ProductDetail $productDetail): self
     {
-        $this->brand = $brand;
+        if (!$this->productDetails->contains($productDetail)) {
+            $this->productDetails->add($productDetail);
+            $productDetail->setProduct($this);
+        }
 
         return $this;
     }
 
-    public function getScreenSize(): ?string
+    public function removeProductDetail(ProductDetail $productDetail): self
     {
-        return $this->screen_size;
-    }
-
-    public function setScreenSize(string $screen_size): self
-    {
-        $this->screen_size = $screen_size;
+        if ($this->productDetails->removeElement($productDetail)) {
+            // set the owning side to null (unless already changed)
+            if ($productDetail->getProduct() === $this) {
+                $productDetail->setProduct(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getTechnicalDetails(): ?string
+    /**
+     * @return Collection|ProductStock[]
+     */
+    public function getProductStocks(): Collection
     {
-        return $this->technical_details;
+        return $this->productStocks;
     }
 
-    public function setTechnicalDetails(string $technical_details): self
+    public function addProductStock(ProductStock $productStock): self
     {
-        $this->technical_details = $technical_details;
+        if (!$this->productStocks->contains($productStock)) {
+            $this->productStocks[] = $productStock;
+            $productStock->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductStock(ProductStock $productStock): self
+    {
+        if ($this->productStocks->removeElement($productStock)) {
+            // set the owning side to null (unless already changed)
+            if ($productStock->getProduct() === $this) {
+                $productStock->setProduct(null);
+            }
+        }
 
         return $this;
     }

@@ -28,7 +28,7 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
         $customer->setUsername($faker->userName());
         $customer->setEmail($customer->getUsername() . '@email.fr');
         $customer->setPassword($faker->password());
-        $customer->setPhoneNumber($faker->phoneNumber());
+        $customer->setPhoneNumber(0 . rand(6, 7) . rand(10000000, 99999999));
 
         $this->addReference('customer-' . $customerId, $customer);
 

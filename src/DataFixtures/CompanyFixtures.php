@@ -15,7 +15,7 @@ class CompanyFixtures extends Fixture
         $manager->flush();
     }
 
-    public function createCompany(int $countCompany, string $name, ObjectManager $manager) 
+    public function createCompany(int $countCompany, string $name, ObjectManager $manager)
     {
         $company = new Company();
         $company->setName($name);

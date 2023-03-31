@@ -11,16 +11,16 @@ class ProductDetailFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $this->createProductDetail(1, '6.1 pouces', '128 Go', 'iOS 14', '5G', $manager);
-        $this->createProductDetail(2, '6.7 pouces', '128 Go', 'iOS 14', '5G', $manager);
-        $this->createProductDetail(3, '6.1 pouces', '128 Go', 'iOS 14', '5G', $manager);
-        $this->createProductDetail(4, '5.4 pouces', '128 Go', 'iOS 14', '5G', $manager);
-        $this->createProductDetail(5, '6.2 pouces', '128 Go', 'Android 11', '5G', $manager);
-        $this->createProductDetail(6, '6.8 pouces', '128 Go', 'Android 11', '5G', $manager);
+        $this->createProductDetail(0, '6.1 pouces', '128 Go', 'iOS 14', '5G', $manager);
+        $this->createProductDetail(1, '6.7 pouces', '128 Go', 'iOS 14', '5G', $manager);
+        $this->createProductDetail(2, '6.1 pouces', '128 Go', 'iOS 14', '5G', $manager);
+        $this->createProductDetail(3, '5.4 pouces', '128 Go', 'iOS 14', '5G', $manager);
+        $this->createProductDetail(4, '6.2 pouces', '128 Go', 'Android 11', '5G', $manager);
+        $this->createProductDetail(5, '6.8 pouces', '128 Go', 'Android 11', '5G', $manager);
+        $this->createProductDetail(6, '6.5 pouces', '128 Go', 'Android 11', '5G', $manager);
         $this->createProductDetail(7, '6.5 pouces', '128 Go', 'Android 11', '5G', $manager);
         $this->createProductDetail(8, '6.5 pouces', '128 Go', 'Android 11', '5G', $manager);
-        $this->createProductDetail(9, '6.5 pouces', '128 Go', 'Android 11', '5G', $manager);
-        $this->createProductDetail(10, '6.76 pouces', '128 Go', 'Android 11', '5G', $manager);
+        $this->createProductDetail(9, '6.76 pouces', '128 Go', 'Android 11', '5G', $manager);
 
         $manager->flush();
     }

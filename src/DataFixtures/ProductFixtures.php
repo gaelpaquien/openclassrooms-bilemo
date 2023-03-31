@@ -20,7 +20,6 @@ class ProductFixtures extends Fixture
         $this->createProduct(7, 2, 'HuaWei P40 Pro', "Le HuaWei P40 Pro est un smartphone haut de gamme de Huawei, avec un grand écran, un appareil photo professionnel, une puce rapide et une connexion 5G.", $manager);
         $this->createProduct(8, 2, 'HuaWei P40', "Le HuaWei P40 est un smartphone haut de gamme de Huawei, avec un grand écran, un appareil photo professionnel, une puce rapide et une connexion 5G.", $manager);
         $this->createProduct(9, 2, 'HuaWei P40 Lite', "Le HuaWei P40 Lite est un smartphone haut de gamme de Huawei, avec un grand écran, un appareil photo professionnel de qualité décente, une puce rapide et une connexion 5G. Il est moins cher que les autres modèles de la série P40.", $manager);
-        $this->createProduct(10, 2, 'HuaWei Mate 40 Pro', "Le HuaWei Mate 40 Pro est un smartphone haut de gamme de Huawei, avec un grand écran incurvé, un appareil photo professionnel, une puce rapide et une connexion 5G. Il est considéré comme le modèle le plus avancé de la série Mate 40.", $manager);
 
         $manager->flush();
     }

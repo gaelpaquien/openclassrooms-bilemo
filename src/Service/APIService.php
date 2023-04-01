@@ -25,10 +25,10 @@ class APIService {
         return new JsonResponse(null, Response::HTTP_CREATED);
     }
 
-    public function get(mixed $object, array $groups): JsonResponse
+    public function get(mixed $resource, array $groups): JsonResponse
     {
-        if (!is_array($object) && !is_object($object)) {
-            throw new \InvalidArgumentException('The object must be an array or an object');
+        if (!is_array($resource) && !is_object($resource)) {
+            throw new \InvalidArgumentException('The resource must be an array or an object');
         }
 
         foreach ($groups as $group) {
@@ -43,9 +43,9 @@ class APIService {
         ];
 
         try {
-            $jsonResponse = $this->serializer->serialize($object, 'json', $options);
+            $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
         } catch (\Exception $e) {
-            throw new BadRequestException('Unable to serialize object');
+            throw new BadRequestException('Unable to serialize resource');
         }
 
         return new JsonResponse($jsonResponse, Response::HTTP_OK, [
@@ -53,13 +53,13 @@ class APIService {
         ], true);
     }
 
-    public function delete(object $object): JsonResponse
+    public function delete(object $resource): JsonResponse
     {
-        if (!is_object($object)) {
-            throw new \InvalidArgumentException('The object must be an object');
+        if (!is_object($resource)) {
+            throw new \InvalidArgumentException('The resource must be an object');
         }
 
-        $this->em->remove($object);
+        $this->em->remove($resource);
         $this->em->flush();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);

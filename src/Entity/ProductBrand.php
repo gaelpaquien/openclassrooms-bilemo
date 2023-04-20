@@ -6,6 +6,7 @@ use App\Repository\ProductBrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductBrandRepository::class)]
 class ProductBrand
@@ -16,14 +17,15 @@ class ProductBrand
     private ?int $id = null;
 
     #[ORM\Column(length: 50, unique: true)]
+    #[Groups('product:read')]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'brand', targetEntity: ProductModel::class, orphanRemoval: true)]
-    private Collection $productModels;
+    #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Product::class, orphanRemoval: true)]
+    private Collection $products;
 
     public function __construct()
     {
-        $this->productModels = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -44,29 +46,29 @@ class ProductBrand
     }
 
     /**
-     * @return Collection<int, ProductModel>
+     * @return Collection<int, Product>
      */
-    public function getProductModels(): Collection
+    public function getProducts(): Collection
     {
-        return $this->productModels;
+        return $this->products;
     }
 
-    public function addProductModel(ProductModel $productModel): self
+    public function addProduct(Product $product): self
     {
-        if (!$this->productModels->contains($productModel)) {
-            $this->productModels->add($productModel);
-            $productModel->setBrand($this);
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setBrand($this);
         }
 
         return $this;
     }
 
-    public function removeProductModel(ProductModel $productModel): self
+    public function removeProduct(Product $product): self
     {
-        if ($this->productModels->removeElement($productModel)) {
+        if ($this->products->removeElement($product)) {
             // set the owning side to null (unless already changed)
-            if ($productModel->getBrand() === $this) {
-                $productModel->setBrand(null);
+            if ($product->getBrand() === $this) {
+                $product->setBrand(null);
             }
         }
 

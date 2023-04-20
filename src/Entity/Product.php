@@ -38,7 +38,7 @@ class Product
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Groups('product:read')]
-    private ?string $price = null;
+    private ?int $price = null;
 
     #[ORM\Column(length: 4, options: ['default' => 'EUR'])]
     #[Groups('product:read')]
@@ -102,12 +102,12 @@ class Product
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?int
     {
         return $this->price;
     }
 
-    public function setPrice(string $price): self
+    public function setPrice(int $price): self
     {
         $this->price = $price;
 

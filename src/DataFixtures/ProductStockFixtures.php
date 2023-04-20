@@ -14,7 +14,7 @@ class ProductStockFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 10; $i++) {
             for ($j = 0; $j < 5; $j++) {
                 $productStock = new ProductStock();
-                $productStock->setModel($this->getReference('product-model-' . $i));
+                $productStock->setProduct($this->getReference('product-' . $i));
                 $productStock->setColor($this->getReference('product-color-' . $j));
                 $productStock->setQuantity(rand(0, 15));
 
@@ -29,7 +29,7 @@ class ProductStockFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             ProductColorFixtures::class,
-            ProductModelFixtures::class,
+            ProductFixtures::class,
         ];
     }
 }

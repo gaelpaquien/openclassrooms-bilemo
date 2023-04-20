@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Product;
 use App\Entity\ProductColor;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -35,6 +34,7 @@ class ProductColorFixtures extends Fixture
             }
 
             $this->addReference('product-color-' . $i, $productColor);
+
             $manager->persist($productColor);
         }
 

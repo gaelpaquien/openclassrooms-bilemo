@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\CustomerAddress;
@@ -9,12 +11,12 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<CustomerAddress>
  *
- * @method CustomerAddress|null find($id, $lockMode = null, $lockVersion = null)
- * @method CustomerAddress|null findOneBy(array $criteria, array $orderBy = null)
- * @method CustomerAddress[]    findAll()
- * @method CustomerAddress[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method null|CustomerAddress find($id, $lockMode = null, $lockVersion = null)
+ * @method null|CustomerAddress findOneBy(array $criteria, array $orderBy = null)
+ * @method CustomerAddress[] findAll()
+ * @method CustomerAddress[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CustomerAddressRepository extends ServiceEntityRepository
+final class CustomerAddressRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

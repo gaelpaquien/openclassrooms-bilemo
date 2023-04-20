@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Trait\CreatedAtTrait;
@@ -42,6 +44,9 @@ class Customer
     #[Groups('customer:read')]
     private ?string $phone_number = null;
 
+    /**
+     * @var Collection<int, CustomerAddress>|CustomerAddress[]
+     */
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerAddress::class, orphanRemoval: true)]
     #[Groups('customer:read')]
     private Collection $customerAddresses;
@@ -138,11 +143,9 @@ class Customer
 
     public function removeCustomerAddress(CustomerAddress $customerAddress): self
     {
-        if ($this->customerAddresses->removeElement($customerAddress)) {
-            // set the owning side to null (unless already changed)
-            if ($customerAddress->getCustomer() === $this) {
-                $customerAddress->setCustomer(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->customerAddresses->removeElement($customerAddress) && $customerAddress->getCustomer() === $this) {
+            $customerAddress->setCustomer(null);
         }
 
         return $this;

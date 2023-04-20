@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ProductBrandRepository;
@@ -20,6 +22,9 @@ class ProductBrand
     #[Groups('product:read')]
     private ?string $name = null;
 
+    /**
+     * @var Collection<int, Product>|Product[]
+     */
     #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Product::class, orphanRemoval: true)]
     private Collection $products;
 
@@ -65,11 +70,9 @@ class ProductBrand
 
     public function removeProduct(Product $product): self
     {
-        if ($this->products->removeElement($product)) {
-            // set the owning side to null (unless already changed)
-            if ($product->getBrand() === $this) {
-                $product->setBrand(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->products->removeElement($product) && $product->getBrand() === $this) {
+            $product->setBrand(null);
         }
 
         return $this;

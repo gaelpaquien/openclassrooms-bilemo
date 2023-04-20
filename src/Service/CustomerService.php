@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Customer;
@@ -9,22 +11,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class CustomerService 
+final class CustomerService
 {
-    private SerializerInterface $serializer;
-
-    private CompanyRepository $companyRepository;
-
-    private EntityManagerInterface $em;
-
-    public function __construct(SerializerInterface $serializer, CompanyRepository $companyRepository, EntityManagerInterface $em)
+    public function __construct(private readonly SerializerInterface $serializer, private readonly CompanyRepository $companyRepository, private readonly EntityManagerInterface $em)
     {
-        $this->serializer = $serializer;
-        $this->companyRepository = $companyRepository;
-        $this->em = $em;
     }
 
-    public function createCustomer(Request $request): Customer {
+    public function createCustomer(Request $request): Customer
+    {
         // Recovers all the data that has been sent
         $content = $request->toArray();
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\ProductDetail;
@@ -7,7 +9,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ProductDetailFixtures extends Fixture implements DependentFixtureInterface
+final class ProductDetailFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -31,8 +33,8 @@ class ProductDetailFixtures extends Fixture implements DependentFixtureInterface
         string $storage_capacity,
         string $operating_system,
         string $network,
-        ObjectManager $manager)
-    {
+        ObjectManager $manager
+    ): void {
         $productDetail = new ProductDetail();
         $productDetail->setProduct($this->getReference('product-' . $countProduct));
         $productDetail->setScreenSize($screen_size);

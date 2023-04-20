@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\CompanyRepository;
@@ -20,6 +22,9 @@ class Company
     #[Groups('customer:read')]
     private ?string $name = null;
 
+    /**
+     * @var Collection<int, Customer>|Customer[]
+     */
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
     private Collection $customers;
 
@@ -65,11 +70,9 @@ class Company
 
     public function removeCustomer(Customer $customer): self
     {
-        if ($this->customers->removeElement($customer)) {
-            // set the owning side to null (unless already changed)
-            if ($customer->getCompany() === $this) {
-                $customer->setCompany(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->customers->removeElement($customer) && $customer->getCompany() === $this) {
+            $customer->setCompany(null);
         }
 
         return $this;

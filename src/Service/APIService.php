@@ -6,23 +6,45 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class APIService {
-
+class APIService 
+{
     private SerializerInterface $serializer;
 
     private EntityManagerInterface $em;
 
-    public function __construct(SerializerInterface $serializer, EntityManagerInterface $em)
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator)
     {
         $this->serializer = $serializer;
         $this->em = $em;
+        $this->urlGenerator = $urlGenerator;
     }
 
-    public function post(): JsonResponse
+    public function post(mixed $resource, string $location, array $groups): JsonResponse
     {
-        return new JsonResponse(null, Response::HTTP_CREATED);
+        foreach ($groups as $group) {
+            if (!is_string($group)) {
+                throw new \InvalidArgumentException('The group must be a string');
+            }
+        }
+
+        $options = [
+            'groups' => $groups,
+            'skip_null_values' => true,
+        ];
+
+        $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
+
+        $location = $this->urlGenerator->generate($location, [
+            'id' => $resource->getId(), 
+            'companyId' => $resource->getCompany()->getId()
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return new JsonResponse($jsonResponse, Response::HTTP_CREATED, ["Location" => $location], true);
     }
 
     public function get(mixed $resource, array $groups): JsonResponse

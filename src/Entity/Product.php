@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Trait\CreatedAtTrait;
@@ -38,23 +40,28 @@ class Product
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Groups('product:read')]
-    private ?string $price = null;
+    private ?int $price = null;
 
     #[ORM\Column(length: 4, options: ['default' => 'EUR'])]
     #[Groups('product:read')]
-    private ?string $price_currency = null;
+    private ?string $price_currency = 'EUR';
 
+    /**
+     * @var Collection<int, ProductDetail>|ProductDetail[]
+     */
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductDetail::class)]
     #[Groups('product:read')]
     private Collection $productDetails;
 
+    /**
+     * @var Collection<int, ProductStock>|ProductStock[]
+     */
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductStock::class, orphanRemoval: true)]
     #[Groups('product:read')]
     private Collection $productStocks;
 
     public function __construct()
     {
-        $this->price_currency = 'EUR';
         $this->created_at = new \DateTimeImmutable();
         $this->updated_at = new \DateTimeImmutable();
         $this->productDetails = new ArrayCollection();
@@ -78,7 +85,7 @@ class Product
         return $this;
     }
 
-        public function getBrand(): ?ProductBrand
+    public function getBrand(): ?ProductBrand
     {
         return $this->brand;
     }
@@ -102,12 +109,12 @@ class Product
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?int
     {
         return $this->price;
     }
 
-    public function setPrice(string $price): self
+    public function setPrice(int $price): self
     {
         $this->price = $price;
 
@@ -170,11 +177,9 @@ class Product
 
     public function removeProductDetail(ProductDetail $productDetail): self
     {
-        if ($this->productDetails->removeElement($productDetail)) {
-            // set the owning side to null (unless already changed)
-            if ($productDetail->getProduct() === $this) {
-                $productDetail->setProduct(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->productDetails->removeElement($productDetail) && $productDetail->getProduct() === $this) {
+            $productDetail->setProduct(null);
         }
 
         return $this;
@@ -200,11 +205,9 @@ class Product
 
     public function removeProductStock(ProductStock $productStock): self
     {
-        if ($this->productStocks->removeElement($productStock)) {
-            // set the owning side to null (unless already changed)
-            if ($productStock->getProduct() === $this) {
-                $productStock->setProduct(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->productStocks->removeElement($productStock) && $productStock->getProduct() === $this) {
+            $productStock->setProduct(null);
         }
 
         return $this;

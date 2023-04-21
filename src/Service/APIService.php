@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -9,25 +11,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class APIService 
+final class APIService
 {
-    private SerializerInterface $serializer;
-
-    private EntityManagerInterface $em;
-
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator)
+    public function __construct(private readonly SerializerInterface $serializer, private readonly EntityManagerInterface $em, private readonly UrlGeneratorInterface $urlGenerator)
     {
-        $this->serializer = $serializer;
-        $this->em = $em;
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function post(mixed $resource, string $location, array $groups): JsonResponse
     {
         foreach ($groups as $group) {
-            if (!is_string($group)) {
+            if (!\is_string($group)) {
                 throw new \InvalidArgumentException('The group must be a string');
             }
         }
@@ -39,22 +32,25 @@ class APIService
 
         $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
 
-        $location = $this->urlGenerator->generate($location, [
-            'id' => $resource->getId(), 
-            'companyId' => $resource->getCompany()->getId()
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
+        $location = $this->urlGenerator->generate(
+            $location, [
+                'id' => $resource->getId(),
+                'companyId' => $resource->getCompany()->getId(),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
-        return new JsonResponse($jsonResponse, Response::HTTP_CREATED, ["Location" => $location], true);
+        return new JsonResponse($jsonResponse, Response::HTTP_CREATED, ['Location' => $location], true);
     }
 
     public function get(mixed $resource, array $groups): JsonResponse
     {
-        if (!is_array($resource) && !is_object($resource)) {
+        if (!\is_array($resource) && !\is_object($resource)) {
             throw new \InvalidArgumentException('The resource must be an array or an object');
         }
 
         foreach ($groups as $group) {
-            if (!is_string($group)) {
+            if (!\is_string($group)) {
                 throw new \InvalidArgumentException('The group must be a string');
             }
         }
@@ -66,18 +62,22 @@ class APIService
 
         try {
             $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new BadRequestException('Unable to serialize resource');
         }
 
-        return new JsonResponse($jsonResponse, Response::HTTP_OK, [
-            'Content-Type' => 'application/json'
-        ], true);
+        return new JsonResponse(
+            $jsonResponse,
+            Response::HTTP_OK, [
+                'Content-Type' => 'application/json',
+            ],
+            true
+        );
     }
 
     public function delete(object $resource): JsonResponse
     {
-        if (!is_object($resource)) {
+        if (!\is_object($resource)) {
             throw new \InvalidArgumentException('The resource must be an object');
         }
 

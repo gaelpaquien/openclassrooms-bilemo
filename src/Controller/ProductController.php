@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Product;
@@ -9,13 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractController
+final class ProductController extends AbstractController
 {
-    private APIService $apiService;
-
-    public function __construct(APIService $apiService)
+    public function __construct(private readonly APIService $apiService)
     {
-        $this->apiService = $apiService;
     }
 
     #[Route('/api/products/', name: 'product_list', methods: ['GET'])]

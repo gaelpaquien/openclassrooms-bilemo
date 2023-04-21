@@ -30,7 +30,11 @@ final class APIService
             'skip_null_values' => true,
         ];
 
-        $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
+        try {
+            $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
+        } catch (\Exception) {
+            throw new BadRequestException('Unable to serialize resource');
+        }
 
         $location = $this->urlGenerator->generate(
             $location, [

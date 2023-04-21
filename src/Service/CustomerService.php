@@ -99,7 +99,7 @@ final class CustomerService
         }
 
         // Check if the company exists
-        $companyId = intval($request->attributes->get('companyId'));
+        $companyId = (int)$request->attributes->get('companyId');
         if ($this->checkCompanyExists($companyId) === false) {
             return new JsonResponse('Cette entreprise n\'existe pas', Response::HTTP_BAD_REQUEST, [], true);
         }

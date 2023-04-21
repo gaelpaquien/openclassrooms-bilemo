@@ -9,7 +9,6 @@ use App\Entity\CustomerAddress;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Faker;
 
 final class CustomerAddressFixtures extends Fixture implements DependentFixtureInterface
 {

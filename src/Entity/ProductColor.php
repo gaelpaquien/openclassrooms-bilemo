@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ProductColorRepository;
@@ -20,6 +22,9 @@ class ProductColor
     #[Groups('product:read')]
     private ?string $name = null;
 
+    /**
+     * @var Collection<int, ProductStock>|ProductStock[]
+     */
     #[ORM\OneToMany(mappedBy: 'color', targetEntity: ProductStock::class, orphanRemoval: true)]
     private Collection $productStocks;
 
@@ -65,11 +70,9 @@ class ProductColor
 
     public function removeProductStock(ProductStock $productStock): self
     {
-        if ($this->productStocks->removeElement($productStock)) {
-            // set the owning side to null (unless already changed)
-            if ($productStock->getColor() === $this) {
-                $productStock->setColor(null);
-            }
+        // Set the owning side to null (unless already changed)
+        if ($this->productStocks->removeElement($productStock) && $productStock->getColor() === $this) {
+            $productStock->setColor(null);
         }
 
         return $this;

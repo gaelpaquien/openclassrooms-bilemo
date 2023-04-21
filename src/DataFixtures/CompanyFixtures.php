@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Company;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class CompanyFixtures extends Fixture
+final class CompanyFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -15,12 +17,12 @@ class CompanyFixtures extends Fixture
         $manager->flush();
     }
 
-    public function createCompany(int $countCompany, string $name, ObjectManager $manager)
+    public function createCompany(int $countCompany, string $name, ObjectManager $manager): void
     {
         $company = new Company();
         $company->setName($name);
 
-        $this->addReference('company-' . $countCompany, $company);
+        $this->addReference('company-'.$countCompany, $company);
 
         $manager->persist($company);
     }

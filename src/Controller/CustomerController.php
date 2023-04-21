@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Customer;
@@ -11,20 +13,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CustomerController extends AbstractController
+final class CustomerController extends AbstractController
 {
-    private APIService $apiService;
-
-    private CustomerService $customerService;
-
-    public function __construct(APIService $apiService, CustomerService $customerService)
+    public function __construct(private readonly APIService $apiService, private readonly CustomerService $customerService)
     {
-        $this->apiService = $apiService;
-        $this->customerService = $customerService;
     }
 
     #[Route('/api/companies/{companyId}/customers', name: 'customer_create', methods: ['POST'])]
-    public function createCustomer(Request $request): JsonResponse 
+    public function createCustomer(Request $request): JsonResponse
     {
         $customer = $this->customerService->createCustomer($request);
 

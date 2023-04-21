@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
@@ -31,17 +32,25 @@ class Customer
 
     #[ORM\Column(length: 50)]
     #[Groups('customer:read')]
+    #[Assert\NotBlank(message: 'Le nom d\'utilisateur est obligatoire')]
+    #[Assert\Length(min: 5, max: 50, minMessage: "Le nom d\'utilisateur doit contenir au moins {{ limit }} caractères", maxMessage: "Le nom d\'utilisateur doit contenir au maximum {{ limit }} caractères")]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Groups('customer:read')]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire')]
+    #[Assert\Email(message: 'L\'email n\'est pas valide')]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
+    #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères')]
     private ?string $password = null;
 
     #[ORM\Column(length: 20)]
     #[Groups('customer:read')]
+    #[Assert\NotBlank(message: 'Le numéro de téléphone est obligatoire')]
+    #[Assert\Length(min: 10, max: 12, minMessage: 'Le numéro de téléphone doit contenir au moins {{ limit }} caractères', maxMessage: 'Le numéro de téléphone doit contenir au maximum {{ limit }} caractères')]
     private ?string $phone_number = null;
 
     /**

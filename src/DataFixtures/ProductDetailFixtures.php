@@ -47,8 +47,6 @@ final class ProductDetailFixtures extends Fixture implements DependentFixtureInt
 
     public function getDependencies(): array
     {
-        return [
-            ProductFixtures::class,
-        ];
+        return [ProductFixtures::class];
     }
 }

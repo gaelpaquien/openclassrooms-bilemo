@@ -34,12 +34,12 @@ final class ProductFixtures extends Fixture
         ObjectManager $manager
     ): void {
         $product = new Product();
-        $product->setBrand($this->getReference('product-brand-' . $brand));
+        $product->setBrand($this->getReference('product-brand-'.$brand));
         $product->setName($name);
         $product->setDescription($description);
         $product->setPrice(\rand(350, 1100));
 
-        $this->addReference('product-' . $productId, $product);
+        $this->addReference('product-'.$productId, $product);
 
         $manager->persist($product);
     }

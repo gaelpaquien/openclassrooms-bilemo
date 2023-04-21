@@ -31,7 +31,7 @@ final class CustomerAddressFixtures extends Fixture implements DependentFixtureI
         $customerAddress->setCity($faker->city());
         $customerAddress->setPostalCode(\rand(30000, 95000));
         $customerAddress->setAddress($faker->streetAddress());
-        if ($customerId % 2 === 0) {
+        if (($customerId % 2) === 0) {
             $customerAddress->setAddressDetails($faker->secondaryAddress());
         }
 

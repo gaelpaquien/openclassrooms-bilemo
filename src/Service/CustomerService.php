@@ -35,7 +35,7 @@ final class CustomerService
         $address->setCity($content['address']['city']);
         $address->setPostalCode($content['address']['postal_code']);
         $address->setAddress($content['address']['address']);
-        $address->setAddressDetails($content['address']['address_details'] ?? null);
+        $address->setAddressDetails(($content['address']['address_details'] ?? null));
 
         $customer->addCustomerAddress($address);
 

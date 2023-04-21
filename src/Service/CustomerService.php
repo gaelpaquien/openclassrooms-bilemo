@@ -17,37 +17,32 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class CustomerService
 {
-    public function __construct(private readonly SerializerInterface $serializer, private readonly CompanyRepository $companyRepository, private readonly EntityManagerInterface $em, private readonly ValidatorInterface $validator, private readonly UrlGeneratorInterface $urlGenerator)
+    public function __construct(private readonly SerializerInterface $serializer, private readonly CompanyRepository $companyRepository, private readonly EntityManagerInterface $em, private readonly ValidatorInterface $validator, private readonly UrlGeneratorInterface $urlGenerator, private APIService $apiService)
     {
     }
 
-/*     public function createCustomer(Request $request): Customer|JsonResponse
+    private function checkCompanyExists(int $companyId): bool
     {
-        $result = new stdClass();
-        $result->customer = $customer;
-        $result->location = $location;
-
-        return $this->apiService->post($customer, $location, ['customer:read']);
-    } */
-
-    public function createCustomer(Request $request): Customer | JsonResponse
-    {
-        // Recovers all the data that has been sent
-        $content = $request->toArray();
-
-        $customer = $this->serializer->deserialize($request->getContent(), Customer::class, 'json');
-
-        // Recovers the company and checks if it exists
-        $companyId = $request->attributes->get('companyId');
-        $companyExists = $this->companyRepository->findOneBy(['id' => $companyId]);
-        if (!$companyExists) {
-            return new JsonResponse('Cette entreprise n\'existe pas', Response::HTTP_BAD_REQUEST, [], true);
+        $company = $this->companyRepository->findOneBy(['id' => $companyId]);
+        if (!$company) {
+            return false;
         }
 
-        // Sets the company to the customer
-        $customer->setCompany($this->companyRepository->find($companyId));
+        return true;
+    }
 
-        // Recovers the address informations and sets it to the customer
+    private function checkCustomerExists(string $email): bool
+    {
+        $customer = $this->em->getRepository(Customer::class)->findOneBy(['email' => $email]);
+        if (!$customer) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function createCustomerAddress(Customer $customer, array $content): CustomerAddress
+    {
         $address = new CustomerAddress();
         $address->setCustomer($customer);
         $address->setCountry($content['address']['country']);
@@ -56,9 +51,11 @@ final class CustomerService
         $address->setAddress($content['address']['address']);
         $address->setAddressDetails(($content['address']['address_details'] ?? null));
 
-        $customer->addCustomerAddress($address);
+        return $address;
+    }
 
-        // Validates the customer and the address
+    private function dataValidation(Customer $customer, CustomerAddress $address): bool | JsonResponse
+    {
         $customerErrors = $this->validator->validate($customer);
         $addressErrors = $this->validator->validate($address);
         $errors = array_merge($customerErrors->getIterator()->getArrayCopy(), $addressErrors->getIterator()->getArrayCopy());
@@ -75,27 +72,54 @@ final class CustomerService
             return new JsonResponse($jsonResponse, Response::HTTP_BAD_REQUEST, [], true);
         }
 
-        // Check if the customer already exists
-        $customerExists = $this->em->getRepository(Customer::class)->findOneBy(['email' => $customer->getEmail()]);
-        if ($customerExists) {
+        return true;
+    }
+
+    private function getLocation(Customer $customer): string
+    {
+        return $this->urlGenerator->generate(
+            'customer_detail', [
+                'id' => $customer->getId(),
+                'companyId' => $customer->getCompany()->getId(),
+            ]
+        );
+    }
+
+    public function createCustomer(Request $request): JsonResponse
+    {
+        // Recovers all the data that has been sent
+        $content = $request->toArray();
+
+        // Deserializes the data into a Customer object
+        $customer = $this->serializer->deserialize($request->getContent(), Customer::class, 'json');
+
+        // Check if the customer email already exists
+        if ($this->checkCustomerExists($customer->getEmail()) === true) {
             return new JsonResponse('Cet email est déjà utilisé', Response::HTTP_BAD_REQUEST, [], true);
+        }
+
+        // Check if the company exists
+        $companyId = intval($request->attributes->get('companyId'));
+        if ($this->checkCompanyExists($companyId) === false) {
+            return new JsonResponse('Cette entreprise n\'existe pas', Response::HTTP_BAD_REQUEST, [], true);
+        }
+
+        // Sets the company to the customer
+        $customer->setCompany($this->companyRepository->find($companyId));
+
+        // Sets the address to the customer
+        $address = $this->createCustomerAddress($customer, $content);
+        $customer->addCustomerAddress($address);
+
+        // Validates the data
+        if (($result = $this->dataValidation($customer, $address)) instanceof JsonResponse) {
+            return $result;
         }
 
         $this->em->persist($customer);
         $this->em->persist($address);
         $this->em->flush();
 
-        $location = $this->urlGenerator->generate(
-            'customer_detail', [
-                'id' => $customer->getId(),
-                'companyId' => $customer->getCompany()->getId(),
-            ],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-
-        return [
-            'customer' => $customer,
-            'location' => $location,
-        ];
+        return $this->apiService->post($customer, $this->getLocation($customer), ['customer:read']);
     }
 }

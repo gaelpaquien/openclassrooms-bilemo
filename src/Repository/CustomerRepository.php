@@ -23,7 +23,7 @@ final class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
-    public function save(Customer $entity, bool $flush = false): void
+    public function save(Customer $entity, bool $flush=false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -32,7 +32,7 @@ final class CustomerRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Customer $entity, bool $flush = false): void
+    public function remove(Customer $entity, bool $flush=false): void
     {
         $this->getEntityManager()->remove($entity);
 

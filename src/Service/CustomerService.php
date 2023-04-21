@@ -60,6 +60,7 @@ final class CustomerService
                 $message = (string) $error;
                 $messages[$property] = $message;
             }
+
             $jsonResponse = json_encode($messages, JSON_PRETTY_PRINT);
             return new JsonResponse($jsonResponse, Response::HTTP_BAD_REQUEST, [], true);
         }

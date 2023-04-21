@@ -66,9 +66,13 @@ final class APIService
             throw new BadRequestException('Unable to serialize resource');
         }
 
-        return new JsonResponse($jsonResponse, Response::HTTP_OK, [
-            'Content-Type' => 'application/json',
-        ], true);
+        return new JsonResponse(
+            $jsonResponse,
+            Response::HTTP_OK, [
+                'Content-Type' => 'application/json',
+            ],
+            true
+        );
     }
 
     public function delete(object $resource): JsonResponse

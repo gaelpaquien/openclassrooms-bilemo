@@ -16,8 +16,8 @@ final class ProductStockFixtures extends Fixture implements DependentFixtureInte
         for ($i = 0; $i < 10; ++$i) {
             for ($j = 0; $j < 5; ++$j) {
                 $productStock = new ProductStock();
-                $productStock->setProduct($this->getReference('product-' . $i));
-                $productStock->setColor($this->getReference('product-color-' . $j));
+                $productStock->setProduct($this->getReference('product-'.$i));
+                $productStock->setColor($this->getReference('product-color-'.$j));
                 $productStock->setQuantity(\rand(0, 15));
 
                 $manager->persist($productStock);

@@ -32,7 +32,7 @@ final class ProductBrandRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(ProductBrand $entity, bool $flush = false): void
+    public function remove(ProductBrand $entity, bool $flush=false): void
     {
         $this->getEntityManager()->remove($entity);
 

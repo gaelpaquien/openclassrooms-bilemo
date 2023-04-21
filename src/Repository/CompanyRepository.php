@@ -32,7 +32,7 @@ final class CompanyRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Company $entity, bool $flush = false): void
+    public function remove(Company $entity, bool $flush=false): void
     {
         $this->getEntityManager()->remove($entity);
 

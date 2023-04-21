@@ -24,7 +24,7 @@ final class ProductColorFixtures extends Fixture
                 default => throw new \Exception('Invalid data in ProductColorFixtures'),
             };
 
-            $this->addReference('product-color-' . $i, $productColor);
+            $this->addReference('product-color-'.$i, $productColor);
 
             $manager->persist($productColor);
         }

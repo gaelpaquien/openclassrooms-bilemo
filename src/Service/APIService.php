@@ -32,10 +32,13 @@ final class APIService
 
         $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
 
-        $location = $this->urlGenerator->generate($location, [
-            'id' => $resource->getId(),
-            'companyId' => $resource->getCompany()->getId(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
+        $location = $this->urlGenerator->generate(
+            $location, [
+                'id' => $resource->getId(),
+                'companyId' => $resource->getCompany()->getId(),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
         return new JsonResponse($jsonResponse, Response::HTTP_CREATED, ['Location' => $location], true);
     }

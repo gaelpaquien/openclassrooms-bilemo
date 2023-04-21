@@ -70,7 +70,7 @@ class ProductColor
 
     public function removeProductStock(ProductStock $productStock): self
     {
-        // set the owning side to null (unless already changed)
+        // Set the owning side to null (unless already changed)
         if ($this->productStocks->removeElement($productStock) && $productStock->getColor() === $this) {
             $productStock->setColor(null);
         }

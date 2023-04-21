@@ -23,7 +23,7 @@ final class ProductBrandRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductBrand::class);
     }
 
-    public function save(ProductBrand $entity, bool $flush = false): void
+    public function save(ProductBrand $entity, bool $flush=false): void
     {
         $this->getEntityManager()->persist($entity);
 

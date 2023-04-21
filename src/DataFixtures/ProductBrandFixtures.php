@@ -22,7 +22,7 @@ final class ProductBrandFixtures extends Fixture
                 default => throw new \Exception('Invalid data in ProductBrandFixtures'),
             };
 
-            $this->addReference('product-brand-' . $i, $productBrand);
+            $this->addReference('product-brand-'.$i, $productBrand);
 
             $manager->persist($productBrand);
         }

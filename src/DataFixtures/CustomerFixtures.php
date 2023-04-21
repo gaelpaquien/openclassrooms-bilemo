@@ -33,7 +33,7 @@ final class CustomerFixtures extends Fixture implements DependentFixtureInterfac
         $customer->setPassword($faker->password());
         $customer->setPhoneNumber(0 . \rand(6, 7) . \rand(10_000_000, 99_999_999));
 
-        $this->addReference('customer-' . $customerId, $customer);
+        $this->addReference('customer-'.$customerId, $customer);
 
         $manager->persist($customer);
     }

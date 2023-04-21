@@ -40,8 +40,6 @@ final class CustomerAddressFixtures extends Fixture implements DependentFixtureI
 
     public function getDependencies(): array
     {
-        return [
-            CustomerFixtures::class,
-        ];
+        return [CustomerFixtures::class];
     }
 }

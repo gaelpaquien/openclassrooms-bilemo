@@ -11,14 +11,24 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class CustomerService
 {
-    public function __construct(private readonly SerializerInterface $serializer, private readonly CompanyRepository $companyRepository, private readonly EntityManagerInterface $em, private readonly ValidatorInterface $validator)
+    public function __construct(private readonly SerializerInterface $serializer, private readonly CompanyRepository $companyRepository, private readonly EntityManagerInterface $em, private readonly ValidatorInterface $validator, private readonly UrlGeneratorInterface $urlGenerator)
     {
     }
+
+/*     public function createCustomer(Request $request): Customer|JsonResponse
+    {
+        $result = new stdClass();
+        $result->customer = $customer;
+        $result->location = $location;
+
+        return $this->apiService->post($customer, $location, ['customer:read']);
+    } */
 
     public function createCustomer(Request $request): Customer | JsonResponse
     {
@@ -75,6 +85,17 @@ final class CustomerService
         $this->em->persist($address);
         $this->em->flush();
 
-        return $customer;
+        $location = $this->urlGenerator->generate(
+            'customer_detail', [
+                'id' => $customer->getId(),
+                'companyId' => $customer->getCompany()->getId(),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        return [
+            'customer' => $customer,
+            'location' => $location,
+        ];
     }
 }

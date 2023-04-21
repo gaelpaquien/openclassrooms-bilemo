@@ -17,7 +17,7 @@ final class APIService
     {
     }
 
-    public function post(mixed $resource, string $location, array $groups): JsonResponse
+    private function getOptions(array $groups): array
     {
         foreach ($groups as $group) {
             if (!\is_string($group)) {
@@ -25,24 +25,26 @@ final class APIService
             }
         }
 
-        $options = [
+        return [
             'groups' => $groups,
             'skip_null_values' => true,
         ];
+    }
 
+    private function serialize(mixed $resource, array $groups): string
+    {
         try {
-            $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
+            $jsonResponse = $this->serializer->serialize($resource, 'json', $this->getoptions($groups));
         } catch (\Exception) {
             throw new BadRequestException('Unable to serialize resource');
         }
 
-        $location = $this->urlGenerator->generate(
-            $location, [
-                'id' => $resource->getId(),
-                'companyId' => $resource->getCompany()->getId(),
-            ],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        return $jsonResponse;
+    }
+
+    public function post(mixed $resource, string $location, array $groups): JsonResponse
+    {
+        $jsonResponse = $this->serialize($resource, $groups);
 
         return new JsonResponse($jsonResponse, Response::HTTP_CREATED, ['Location' => $location], true);
     }

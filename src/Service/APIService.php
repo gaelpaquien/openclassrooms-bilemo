@@ -46,7 +46,13 @@ final class APIService
     {
         $jsonResponse = $this->serialize($resource, $groups);
 
-        return new JsonResponse($jsonResponse, Response::HTTP_CREATED, ['Location' => $location], true);
+        return new JsonResponse(
+            $jsonResponse,
+            Response::HTTP_CREATED, [
+                'Location' => $location
+            ],
+            true
+        );
     }
 
     public function get(mixed $resource, array $groups): JsonResponse
@@ -55,22 +61,7 @@ final class APIService
             throw new \InvalidArgumentException('The resource must be an array or an object');
         }
 
-        foreach ($groups as $group) {
-            if (!\is_string($group)) {
-                throw new \InvalidArgumentException('The group must be a string');
-            }
-        }
-
-        $options = [
-            'groups' => $groups,
-            'skip_null_values' => true,
-        ];
-
-        try {
-            $jsonResponse = $this->serializer->serialize($resource, 'json', $options);
-        } catch (\Exception) {
-            throw new BadRequestException('Unable to serialize resource');
-        }
+        $jsonResponse = $this->serialize($resource, $groups);
 
         return new JsonResponse(
             $jsonResponse,

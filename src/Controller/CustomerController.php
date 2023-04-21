@@ -24,6 +24,11 @@ final class CustomerController extends AbstractController
     {
         $customer = $this->customerService->createCustomer($request);
 
+        // If the customer is an instance of JsonResponse, it means that there is an error validating the data
+        if ($customer instanceof JsonResponse) {
+            return $customer;
+        }
+
         return $this->apiService->post($customer, 'customer_detail', ['customer:read']);
     }
 

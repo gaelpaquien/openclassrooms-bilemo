@@ -22,14 +22,14 @@ final class CustomerController extends AbstractController
     #[Route('/api/companies/{companyId}/customers', name: 'customer_create', methods: ['POST'])]
     public function createCustomer(Request $request): JsonResponse
     {
-        $customer = $this->customerService->createCustomer($request);
+        $result = $this->customerService->createCustomer($request);
 
         // If the customer is an instance of JsonResponse, it means that there is an error validating the data
-        if ($customer instanceof JsonResponse) {
-            return $customer;
+        if ($result instanceof JsonResponse) {
+            return $result;
         }
 
-        return $this->apiService->post($customer, 'customer_detail', ['customer:read']);
+        return $this->apiService->post($result['customer'], $result['location'], ['customer:read']);
     }
 
     #[Route('/api/companies/{companyId}/customers', name: 'customer_list', methods: ['GET'])]

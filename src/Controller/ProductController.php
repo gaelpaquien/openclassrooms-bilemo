@@ -9,6 +9,7 @@ use App\Repository\ProductRepository;
 use App\Service\APIService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class ProductController extends AbstractController
@@ -18,9 +19,13 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/api/products/', name: 'product_list', methods: ['GET'])]
-    public function getAllProducts(ProductRepository $productRepository): JsonResponse
+    public function getAllProducts(ProductRepository $productRepository, Request $request): JsonResponse
     {
-        $products = $productRepository->findAll();
+        // Default pagination values
+        $page = (int) $request->query->get('page', 1);
+        $limit = (int) $request->query->get('limit', 5);
+
+        $products = $productRepository->findAllWithPagination($page, $limit);
 
         return $this->apiService->get($products, ['product:read']);
     }

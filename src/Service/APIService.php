@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 final class APIService
@@ -49,13 +48,13 @@ final class APIService
         );
     }
 
-    public function delete(object $resource, ?array $tags = null): JsonResponse
+    public function delete(object $resource, ?array $tags=null): JsonResponse
     {
         if (!\is_object($resource)) {
             throw new \InvalidArgumentException('The resource must be an object');
         }
 
-        if (null !== $tags) {
+        if ($tags) {
             $this->cacheService->deleteCache($tags);
         }
 
@@ -85,7 +84,7 @@ final class APIService
     private function serialize(mixed $resource, array $groups, ?string $idCache, ?string $tag): string
     {
         switch (true) {
-            case null !== $idCache && null !== $tag:
+            case $idCache && $tag:
                 try {
                     $jsonResponse = $this->cacheService->getCache($idCache, $resource, $tag, $this->getoptions($groups));
                 } catch (\Exception) {

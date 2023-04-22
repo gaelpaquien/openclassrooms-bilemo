@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 final class APIService
 {
-    public function __construct(private readonly SerializerInterface $serializer, private readonly EntityManagerInterface $em, private readonly UrlGeneratorInterface $urlGenerator)
+    public function __construct(private readonly SerializerInterface $serializer, private readonly EntityManagerInterface $em, private readonly UrlGeneratorInterface $urlGenerator, private readonly CacheService $cacheService)
     {
     }
 
@@ -31,12 +31,20 @@ final class APIService
         ];
     }
 
-    private function serialize(mixed $resource, array $groups): string
+    private function serialize(mixed $resource, array $groups, ?string $idCache, ?string $tag): string
     {
-        try {
-            $jsonResponse = $this->serializer->serialize($resource, 'json', $this->getoptions($groups));
-        } catch (\Exception) {
-            throw new BadRequestException('Unable to serialize resource');
+        if ($idCache !== null && $tag !== null) {
+            try {
+                $jsonResponse = $this->cacheService->getCache($idCache, $resource, $tag, $this->getoptions($groups));
+            } catch (\Exception) {
+                throw new BadRequestException('Unable to serialize resource with cache');
+            }
+        } else {
+            try {
+                $jsonResponse = $this->serializer->serialize($resource, 'json', $this->getoptions($groups));
+            } catch (\Exception) {
+                throw new BadRequestException('Unable to serialize resource');
+            }
         }
 
         return $jsonResponse;
@@ -44,7 +52,7 @@ final class APIService
 
     public function post(mixed $resource, string $location, array $groups): JsonResponse
     {
-        $jsonResponse = $this->serialize($resource, $groups);
+        $jsonResponse = $this->serialize($resource, $groups, null, null);
 
         return new JsonResponse(
             $jsonResponse,
@@ -55,13 +63,13 @@ final class APIService
         );
     }
 
-    public function get(mixed $resource, array $groups): JsonResponse
+    public function get(mixed $resource, array $groups, ?string $idCache = null, ?string $tag = null): JsonResponse
     {
         if (!\is_array($resource) && !\is_object($resource)) {
             throw new \InvalidArgumentException('The resource must be an array or an object');
         }
 
-        $jsonResponse = $this->serialize($resource, $groups);
+        $jsonResponse = $this->serialize($resource, $groups, $idCache, $tag);
 
         return new JsonResponse(
             $jsonResponse,
@@ -72,10 +80,14 @@ final class APIService
         );
     }
 
-    public function delete(object $resource): JsonResponse
+    public function delete(object $resource, ?array $tags = null): JsonResponse
     {
         if (!\is_object($resource)) {
             throw new \InvalidArgumentException('The resource must be an object');
+        }
+
+        if ($tags !== null) {
+            $this->cacheService->deleteCache($tags);
         }
 
         $this->em->remove($resource);

@@ -36,7 +36,7 @@ final class CustomerController extends AbstractController
 
         $customers = $customerRepository->findAllWithPaginationByCompany($companyId, $page, $limit);
 
-        $idCache = "customer_list_page_{$page}_limit_{$limit}";
+        $idCache = sprintf('customer_list_page_%d_limit_%d', $page, $limit);
 
         return $this->apiService->get($customers, ['customer:read'], $idCache, 'customer_tag');
     }
@@ -44,13 +44,13 @@ final class CustomerController extends AbstractController
     #[Route('/api/companies/{companyId}/customers/{id}', name: 'customer_detail', methods: ['GET'])]
     public function getCustomer(Customer $customer): JsonResponse
     {
-        $idCache = "customer_detail_{$customer->getId()}";
+        $idCache = sprintf('customer_detail_%s', $customer->getId());
 
         return $this->apiService->get($customer, ['customer:read'], $idCache, 'customer_tag');
     }
 
     #[Route('/api/companies/{companyId}/customers/{id}', name: 'customer_delete', methods: ['DELETE'])]
-    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un client')]
+    #[IsGranted('ROLE_ADMIN', message: "Vous n'avez pas les droits suffisants pour supprimer un client")]
     public function deleteCustomer(Customer $customer): JsonResponse
     {
         return $this->apiService->delete($customer, ['customer_tag']);

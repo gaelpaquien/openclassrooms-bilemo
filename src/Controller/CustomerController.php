@@ -8,6 +8,7 @@ use App\Entity\Customer;
 use App\Repository\CustomerRepository;
 use App\Service\APIService;
 use App\Service\CustomerService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +21,7 @@ final class CustomerController extends AbstractController
     }
 
     #[Route('/api/companies/{companyId}/customers', name: 'customer_create', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour créer un nouveau client')]
     public function createCustomer(Request $request): JsonResponse
     {
         return $this->customerService->createCustomer($request);

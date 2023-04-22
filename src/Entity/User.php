@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Trait\CreatedAtTrait;
@@ -26,9 +28,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
@@ -71,8 +70,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Methode getUsername() which returns the field used by the authentication.
-     *
-     * @return string
      */
     public function getUsername(): string
     {
@@ -88,7 +85,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return \array_unique($roles);
     }
 
     public function setRoles(array $roles): self
@@ -116,7 +113,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;

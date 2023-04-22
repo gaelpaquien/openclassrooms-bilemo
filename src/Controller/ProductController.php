@@ -27,7 +27,7 @@ final class ProductController extends AbstractController
 
         $products = $productRepository->findAllWithPagination($page, $limit);
 
-        $idCache = "product_list_page_{$page}_limit_{$limit}";
+        $idCache = sprintf('product_list_page_%d_limit_%d', $page, $limit);
 
         return $this->apiService->get($products, ['product:read'], $idCache, 'product_tag');
     }
@@ -35,7 +35,7 @@ final class ProductController extends AbstractController
     #[Route('/api/products/{id}', name: 'product_detail', methods: ['GET'])]
     public function getProduct(Product $product): JsonResponse
     {
-        $idCache = "product_detail_{$product->getId()}";
+        $idCache = sprintf('product_detail_%s', $product->getId());
 
         return $this->apiService->get($product, ['product:read'], $idCache, 'product_tag');
     }

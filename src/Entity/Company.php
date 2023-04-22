@@ -28,6 +28,9 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
     private Collection $customers;
 
+    /**
+     * @var Collection<int, User>|User[]
+     */
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class, orphanRemoval: true)]
     private Collection $users;
 
@@ -102,11 +105,9 @@ class Company
 
     public function removeUser(User $user): self
     {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getCompany() === $this) {
-                $user->setCompany(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->users->removeElement($user) && $user->getCompany() === $this) {
+            $user->setCompany(null);
         }
 
         return $this;

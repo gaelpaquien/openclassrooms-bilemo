@@ -32,14 +32,14 @@ class Customer
 
     #[ORM\Column(length: 50)]
     #[Groups('customer:read')]
-    #[Assert\NotBlank(message: 'Le nom d\'utilisateur est obligatoire')]
-    #[Assert\Length(min: 5, max: 50, minMessage: "Le nom d\'utilisateur doit contenir au moins {{ limit }} caractères", maxMessage: "Le nom d\'utilisateur doit contenir au maximum {{ limit }} caractères")]
+    #[Assert\NotBlank(message: "Le nom d'utilisateur est obligatoire")]
+    #[Assert\Length(min: 5, max: 50, minMessage: "Le nom d\\'utilisateur doit contenir au moins {{ limit }} caractères", maxMessage: "Le nom d\\'utilisateur doit contenir au maximum {{ limit }} caractères")]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Groups('customer:read')]
-    #[Assert\NotBlank(message: 'L\'email est obligatoire')]
-    #[Assert\Email(message: 'L\'email n\'est pas valide')]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
+    #[Assert\Email(message: "L'email n'est pas valide")]
     private ?string $email = null;
 
     #[ORM\Column(length: 20)]

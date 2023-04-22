@@ -42,11 +42,6 @@ class Customer
     #[Assert\Email(message: 'L\'email n\'est pas valide')]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
-    #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères')]
-    private ?string $password = null;
-
     #[ORM\Column(length: 20)]
     #[Groups('customer:read')]
     #[Assert\NotBlank(message: 'Le numéro de téléphone est obligatoire')]
@@ -104,18 +99,6 @@ class Customer
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
 
         return $this;
     }

@@ -28,9 +28,13 @@ final class CustomerController extends AbstractController
     }
 
     #[Route('/api/companies/{companyId}/customers', name: 'customer_list', methods: ['GET'])]
-    public function getAllCustomers(CustomerRepository $customerRepository, int $companyId): JsonResponse
+    public function getAllCustomers(CustomerRepository $customerRepository, int $companyId, Request $request): JsonResponse
     {
-        $customers = $customerRepository->findBy(['company' => $companyId]);
+        // Default pagination values
+        $page = (int) $request->query->get('page', 1);
+        $limit = (int) $request->query->get('limit', 5);
+
+        $customers = $customerRepository->findAllWithPaginationByCompany($companyId, $page, $limit);
 
         return $this->apiService->get($customers, ['customer:read']);
     }

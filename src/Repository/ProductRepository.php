@@ -49,4 +49,15 @@ final class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllWithPagination(int $page, int $limit)
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('pd')
+            ->join('p.productDetails', 'pd')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

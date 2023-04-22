@@ -40,4 +40,18 @@ final class CustomerRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+
+
+    public function findAllWithPaginationByCompany(int $companyId, int $page, int $limit)
+    {
+        return $this->createQueryBuilder('c')
+            ->addSelect('c')
+            ->where('c.company = :companyId')
+            ->setParameter('companyId', $companyId)
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

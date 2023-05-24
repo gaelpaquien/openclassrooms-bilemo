@@ -4,10 +4,10 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
+    providers:
+        app_customer_provider:
             entity:
-                class: App\Entity\User
+                class: App\Entity\Customer
                 property: email
     firewalls:
         dev:

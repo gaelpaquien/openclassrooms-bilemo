@@ -28,16 +28,9 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
     private Collection $customers;
 
-    /**
-     * @var Collection<int, User>|User[]
-     */
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class, orphanRemoval: true)]
-    private Collection $users;
-
     public function __construct()
     {
         $this->customers = new ArrayCollection();
-        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,34 +73,6 @@ class Company
         // set the owning side to null (unless already changed)
         if ($this->customers->removeElement($customer) && $customer->getCompany() === $this) {
             $customer->setCompany(null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->setCompany($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        // set the owning side to null (unless already changed)
-        if ($this->users->removeElement($user) && $user->getCompany() === $this) {
-            $user->setCompany(null);
         }
 
         return $this;

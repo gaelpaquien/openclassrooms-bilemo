@@ -10,11 +10,13 @@ use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
-class Customer
+class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use CreatedAtTrait;
     use UpdatedAtTrait;
@@ -32,15 +34,29 @@ class Customer
 
     #[ORM\Column(length: 50)]
     #[Groups('customer:read')]
-    #[Assert\NotBlank(message: "Le nom d'utilisateur est obligatoire")]
-    #[Assert\Length(min: 5, max: 50, minMessage: "Le nom d\\'utilisateur doit contenir au moins {{ limit }} caractères", maxMessage: "Le nom d\\'utilisateur doit contenir au maximum {{ limit }} caractères")]
-    private ?string $username = null;
+    #[Assert\NotBlank(message: "Le prénom est obligatoire")]
+    #[Assert\Length(min: 2, max: 50, minMessage: "Le prénom doit contenir au moins {{ limit }} caractères", maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères")]
+    private ?string $first_name = null;
+
+    #[ORM\Column(length: 50)]
+    #[Groups('customer:read')]
+    #[Assert\NotBlank(message: "Le nom est obligatoire")]
+    #[Assert\Length(min: 2, max: 50, minMessage: "Le nom doit contenir au moins {{ limit }} caractères", maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères")]
+    private ?string $last_name = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Groups('customer:read')]
     #[Assert\NotBlank(message: "L'email est obligatoire")]
     #[Assert\Email(message: "L'email n'est pas valide")]
     private ?string $email = null;
+
+    #[ORM\Column]
+    private array $roles = [];
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
+    #[Assert\Length(min: 8, max: 255, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères', maxMessage: 'Le mot de passe doit contenir au maximum {{ limit }} caractères')]
+    private ?string $password = null;
 
     #[ORM\Column(length: 20)]
     #[Groups('customer:read')]
@@ -79,14 +95,26 @@ class Customer
         return $this;
     }
 
-    public function getUsername(): ?string
+    public function getFirstName(): ?string
     {
-        return $this->username;
+        return $this->first_name;
     }
 
-    public function setUsername(string $username): self
+    public function setFirstName(string $first_name): self
     {
-        $this->username = $username;
+        $this->first_name = $first_name;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->last_name;
+    }
+
+    public function setLastName(string $last_name): self
+    {
+        $this->last_name = $last_name;
 
         return $this;
     }
@@ -101,6 +129,67 @@ class Customer
         $this->email = $email;
 
         return $this;
+    }
+
+        /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+        /**
+     * Methode getUsername() which returns the field used by the authentication.
+     */
+    public function getUsername(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
+        /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_CUSTOMER
+        $roles[] = 'ROLE_CUSTOMER';
+
+        return \array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getPhoneNumber(): ?string

@@ -56,7 +56,7 @@ final class CustomerRepository extends ServiceEntityRepository implements Passwo
             ->getResult();
     }
 
-        /**
+    /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $customer, string $newHashedPassword): void

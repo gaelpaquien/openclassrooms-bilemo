@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
@@ -24,28 +24,28 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'customers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     private ?Company $company = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[Assert\NotBlank(message: "Le prénom est obligatoire")]
     #[Assert\Length(min: 2, max: 50, minMessage: "Le prénom doit contenir au moins {{ limit }} caractères", maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères")]
     private ?string $first_name = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[Assert\NotBlank(message: "Le nom est obligatoire")]
     #[Assert\Length(min: 2, max: 50, minMessage: "Le nom doit contenir au moins {{ limit }} caractères", maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères")]
     private ?string $last_name = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[Assert\NotBlank(message: "L'email est obligatoire")]
     #[Assert\Email(message: "L'email n'est pas valide")]
     private ?string $email = null;
@@ -59,7 +59,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[Assert\NotBlank(message: 'Le numéro de téléphone est obligatoire')]
     #[Assert\Length(min: 10, max: 12, minMessage: 'Le numéro de téléphone doit contenir au moins {{ limit }} caractères', maxMessage: 'Le numéro de téléphone doit contenir au maximum {{ limit }} caractères')]
     private ?string $phone_number = null;
@@ -68,14 +68,15 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, CustomerAddress>|CustomerAddress[]
      */
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerAddress::class, orphanRemoval: true)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     private Collection $customerAddresses;
 
     public function __construct()
     {
-        $this->customerAddresses = new ArrayCollection();
+        $this->roles = ['ROLE_CUSTOMER'];
         $this->created_at = new \DateTimeImmutable();
         $this->updated_at = new \DateTimeImmutable();
+        $this->customerAddresses = new ArrayCollection();
     }
 
     public function getId(): ?int

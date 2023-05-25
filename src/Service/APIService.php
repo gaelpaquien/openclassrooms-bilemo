@@ -5,20 +5,25 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
+use JMS\Serializer\SerializerInterface;
 
 final class APIService
 {
-    public function __construct(private readonly SerializerInterface $serializer, private readonly EntityManagerInterface $em, private readonly CacheService $cacheService)
+    public function __construct(private readonly SerializerInterface $serializer, private readonly SerializationContext $serializerContext, private readonly EntityManagerInterface $em, private readonly CacheService $cacheService)
     {
     }
 
-    public function post(mixed $resource, string $location, array $groups): JsonResponse
+    public function post(mixed $resource, string $location, array $groups, ?array $tags=null): JsonResponse
     {
-        $jsonResponse = $this->serialize($resource, $groups, null, null);
+        if ($tags) {
+            $this->cacheService->deleteCache($tags);
+        }
+
+        $jsonResponse = $this->serializer->serialize($resource, 'json', $this->serializerContext::create()->setGroups($groups)->setSerializeNull(true), null);
 
         return new JsonResponse(
             $jsonResponse,
@@ -64,10 +69,7 @@ final class APIService
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * @return array{groups: mixed[], skip_null_values: true}
-     */
-    private function getOptions(array $groups): array
+    private function serialize(mixed $resource, array $groups, ?string $idCache, ?string $tag): string
     {
         foreach ($groups as $group) {
             if (!\is_string($group)) {
@@ -75,25 +77,17 @@ final class APIService
             }
         }
 
-        return [
-            'groups' => $groups,
-            'skip_null_values' => true,
-        ];
-    }
-
-    private function serialize(mixed $resource, array $groups, ?string $idCache, ?string $tag): string
-    {
         switch (true) {
             case $idCache && $tag:
                 try {
-                    $jsonResponse = $this->cacheService->getCache($idCache, $resource, $tag, $this->getoptions($groups));
+                    $jsonResponse = $this->cacheService->getCache($idCache, $resource, $tag, $groups);
                 } catch (\Exception) {
                     throw new BadRequestException('Unable to serialize resource with cache');
                 }
                 break;
             default:
                 try {
-                    $jsonResponse = $this->serializer->serialize($resource, 'json', $this->getoptions($groups));
+                    $jsonResponse = $this->serializer->serialize($resource, 'json', $this->serializerContext::create()->setGroups($groups)->setSerializeNull(true));
                 } catch (\Exception) {
                     throw new BadRequestException('Unable to serialize resource');
                 }

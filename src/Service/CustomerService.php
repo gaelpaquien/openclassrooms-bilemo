@@ -12,25 +12,34 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Serializer\SerializerInterface;
+use JMS\Serializer\SerializerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class CustomerService
 {
-    public function __construct(private readonly SerializerInterface $serializer, private readonly CompanyRepository $companyRepository, private readonly EntityManagerInterface $em, private readonly ValidatorInterface $validator, private readonly UrlGeneratorInterface $urlGenerator, private readonly APIService $apiService)
+    public function __construct(private readonly SerializerInterface $serializer, private readonly CompanyRepository $companyRepository, private readonly EntityManagerInterface $em, private readonly ValidatorInterface $validator, private readonly UrlGeneratorInterface $urlGenerator, private readonly APIService $apiService, private readonly UserPasswordHasherInterface $passwordHasher)
     {
     }
 
-    public function createCustomer(Request $request): JsonResponse
+    public function createCustomer(Request $request, ?array $tags=null): JsonResponse
     {
         // Recovers all the data that has been sent
         $content = $request->toArray();
 
         // Deserializes the data into a Customer object
-        $customer = $this->serializer->deserialize($request->getContent(), Customer::class, 'json');
+        $deserializedCustomer = $this->serializer->deserialize($request->getContent(), Customer::class, 'json');
+
+        // Creates a new Customer object (do not use the object deserialized with JMS)
+        $newCustomer = new Customer();
+        $newCustomer->setEmail($deserializedCustomer->getEmail());
+        $newCustomer->setFirstName($deserializedCustomer->getFirstName());
+        $newCustomer->setLastName($deserializedCustomer->getLastName());
+        $newCustomer->setPhoneNumber($deserializedCustomer->getPhoneNumber());
+        $newCustomer->setPassword($this->passwordHasher->hashPassword($newCustomer, $deserializedCustomer->getPassword()));
 
         // Check if the customer email already exists
-        if ($this->checkCustomerExists($customer->getEmail())) {
+        if ($this->checkCustomerExists($deserializedCustomer->getEmail())) {
             return new JsonResponse('Cet email est déjà utilisé', Response::HTTP_BAD_REQUEST, [], true);
         }
 
@@ -41,22 +50,22 @@ final class CustomerService
         }
 
         // Sets the company to the customer
-        $customer->setCompany($this->companyRepository->find($companyId));
+        $newCustomer->setCompany($this->companyRepository->find($companyId));
 
         // Sets the address to the customer
-        $address = $this->createCustomerAddress($customer, $content);
-        $customer->addCustomerAddress($address);
+        $address = $this->createCustomerAddress($newCustomer, $content);
+        $newCustomer->addCustomerAddress($address);
 
         // Validates the data
-        if (($result = $this->dataValidation($customer, $address)) instanceof JsonResponse) {
+        if (($result = $this->dataValidation($newCustomer, $address)) instanceof JsonResponse) {
             return $result;
         }
 
-        $this->em->persist($customer);
+        $this->em->persist($newCustomer);
         $this->em->persist($address);
         $this->em->flush();
 
-        return $this->apiService->post($customer, $this->getLocation($customer), ['customer:read']);
+        return $this->apiService->post($newCustomer, $this->getLocation($newCustomer), ['customer:read'], $tags);
     }
 
     private function checkCompanyExists(int $companyId): bool

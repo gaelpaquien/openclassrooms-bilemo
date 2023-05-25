@@ -11,7 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -22,42 +22,42 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100, unique: true)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?ProductBrand $brand = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?int $price = null;
 
     #[ORM\Column(length: 4, options: ['default' => 'EUR'])]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?string $price_currency = 'EUR';
 
     /**
      * @var Collection<int, ProductDetail>|ProductDetail[]
      */
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductDetail::class)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private Collection $productDetails;
 
     /**
      * @var Collection<int, ProductStock>|ProductStock[]
      */
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductStock::class, orphanRemoval: true)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private Collection $productStocks;
 
     public function __construct()

@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Repository\ProductStockRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductStockRepository::class)]
 class ProductStock
@@ -22,11 +22,11 @@ class ProductStock
 
     #[ORM\ManyToOne(inversedBy: 'productStocks')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?ProductColor $color = null;
 
     #[ORM\Column]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?int $quantity = null;
 
     public function getId(): ?int

@@ -24,7 +24,7 @@ final class CustomerController extends AbstractController
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour créer un nouveau client')]
     public function createCustomer(Request $request): JsonResponse
     {
-        return $this->customerService->createCustomer($request);
+        return $this->customerService->createCustomer($request, ['customer_tag']);
     }
 
     #[Route('/api/companies/{companyId}/customers', name: 'customer_list', methods: ['GET'])]

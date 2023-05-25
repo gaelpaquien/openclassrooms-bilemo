@@ -12,7 +12,28 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
 
+/**
+ * @Hateoas\Relation(
+ *    "self",
+ *    href = @Hateoas\Route(
+ *          "product_detail",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *    ),
+ *    exclusion = @Hateoas\Exclusion(groups = {"product:read"})
+ * )
+ *
+ * @Hateoas\Relation(
+ *    "list",
+ *    href = @Hateoas\Route(
+ *          "product_list",
+ *          absolute = true
+ *    ),
+ *    exclusion = @Hateoas\Exclusion(groups = {"product:read"})
+ * )
+ */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
 {

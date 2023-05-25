@@ -14,7 +14,49 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
 
+/**
+ * @Hateoas\Relation(
+ *     "self",
+ *      href = @Hateoas\Route(
+ *          "customer_detail",
+ *          parameters = { "companyId" = "expr(object.getCompany().getId())", "id" = "expr(object.getId())" },
+ *          absolute = true
+ *    ),
+ *    exclusion = @Hateoas\Exclusion(groups = {"customer:read"})
+ * )
+ *
+ * @Hateoas\Relation(
+ *    "list",
+ *     href = @Hateoas\Route(
+ *          "customer_list",
+ *          parameters = { "companyId" = "expr(object.getCompany().getId())" },
+ *          absolute = true
+ *     ),
+ *     exclusion = @Hateoas\Exclusion(groups = {"customer:read"})
+ * )
+ *
+ * @Hateoas\Relation(
+ *    "delete",
+ *    href = @Hateoas\Route(
+ *          "customer_delete",
+ *          parameters = { "companyId" = "expr(object.getCompany().getId())", "id" = "expr(object.getId())" },
+ *          absolute = true
+ *    ),
+ *    exclusion = @Hateoas\Exclusion(groups = {"customer:read"}, excludeIf = "expr(not is_granted('ROLE_ADMIN'))")
+ * )
+ * 
+ * @Hateoas\Relation(
+ *    "create",
+ *    href = @Hateoas\Route(
+ *          "customer_create",
+ *          parameters = { "companyId" = "expr(object.getCompany().getId())" },
+ *          absolute = true
+ *    ),
+ *    exclusion = @Hateoas\Exclusion(groups = {"customer:read"}, excludeIf = "expr(not is_granted('ROLE_ADMIN'))")
+ * )
+ */
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 {

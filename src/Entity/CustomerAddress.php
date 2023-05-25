@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Repository\CustomerAddressRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -23,32 +23,32 @@ class CustomerAddress
     private ?Customer $customer = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50, minMessage: 'Le nom du pays doit contenir au moins {{ limit }} caractères', maxMessage: 'Le nom du pays doit contenir au maximum {{ limit }} caractères')]
     private ?string $country = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50, minMessage: 'Le nom de la ville doit contenir au moins {{ limit }} caractères', maxMessage: 'Le nom de la ville doit contenir au maximum {{ limit }} caractères')]
     private ?string $city = null;
 
     #[ORM\Column()]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[Assert\NotBlank]
     #[Assert\Type(type: 'integer', message: 'Le code postal doit être un nombre')]
     #[Assert\Length(min: 5, max: 5, exactMessage: 'Le code postal doit contenir {{ limit }} caractères')]
     private ?int $postal_code = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 5, max: 255, minMessage: 'L\'adresse doit contenir au moins {{ limit }} caractères', maxMessage: 'L\'adresse doit contenir au maximum {{ limit }} caractères')]
     private ?string $address = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('customer:read')]
+    #[Groups(['customer:read'])]
     #[SerializedName('address_details')]
     #[Assert\Length(min: 5, max: 255, minMessage: 'Les détails de l\'adresse doivent contenir au moins {{ limit }} caractères', maxMessage: 'Les détails de l\'adresse doivent contenir au maximum {{ limit }} caractères')]
     private ?string $address_details = null;

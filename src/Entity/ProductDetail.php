@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Repository\ProductDetailRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductDetailRepository::class)]
 class ProductDetail
@@ -21,19 +21,19 @@ class ProductDetail
     private ?Product $product = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?string $screen_size = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?string $storage_capacity = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?string $operating_system = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups('product:read')]
+    #[Groups(['product:read'])]
     private ?string $network = null;
 
     public function getId(): ?int

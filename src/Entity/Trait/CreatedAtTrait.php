@@ -18,7 +18,7 @@ trait CreatedAtTrait
 
     public function setCreatedAt(\DateTimeImmutable $created_at): self
     {
-        $this->created_at = $created_at ?? new \DateTimeImmutable();
+        $this->created_at = ($created_at ?? new \DateTimeImmutable());
 
         return $this;
     }

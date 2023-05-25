@@ -132,7 +132,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-        /**
+    /**
      * A visual identifier that represents this user.
      *
      * @see UserInterface
@@ -142,7 +142,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
-        /**
+    /**
      * Methode getUsername() which returns the field used by the authentication.
      */
     public function getUsername(): string
@@ -150,7 +150,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->getUserIdentifier();
     }
 
-        /**
+    /**
      * @see UserInterface
      */
     public function getRoles(): array

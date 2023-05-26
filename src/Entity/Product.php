@@ -11,8 +11,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
 use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @Hateoas\Relation(
@@ -24,7 +24,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *    ),
  *    exclusion = @Hateoas\Exclusion(groups = {"product:read"})
  * )
- *
  * @Hateoas\Relation(
  *    "list",
  *    href = @Hateoas\Route(

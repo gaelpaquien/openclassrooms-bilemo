@@ -7,14 +7,13 @@ namespace App\Controller;
 use App\Repository\CustomerRepository;
 use App\Service\APIService;
 use App\Service\CustomerService;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Nelmio\ApiDocBundle\Annotation\Security;
-use OpenApi\Annotations as OA;
 
 final class CustomerController extends AbstractController
 {
@@ -33,8 +32,10 @@ final class CustomerController extends AbstractController
      *    @OA\RequestBody(
      *       required=true,
      *       description="Créer un nouveau client attacher à une entreprise.",
+     *
      *       @OA\JsonContent(
      *          type="object",
+     *
      *          @OA\Property(property="email", type="string", example="test@email.fr"),
      *          @OA\Property(property="first_name", type="string", example="John"),
      *          @OA\Property(property="last_name", type="string", example="Doe"),
@@ -55,14 +56,17 @@ final class CustomerController extends AbstractController
      *       in="path",
      *       description="L'identifiant de l'entreprise.",
      *       required=true,
+     *
      *       @OA\Schema(type="integer")
      *    ),
      *
      *   @OA\Response(
      *      response=201,
      *      description="Créer un nouveau client attaché à une entreprise.",
+     *
      *      @OA\JsonContent(
      *         type="array",
+     *
      *         @OA\Items(ref=@Model(type=Customer::class, groups={"customer:read"}))
      *      )
      *   ),
@@ -88,6 +92,7 @@ final class CustomerController extends AbstractController
      *       in="path",
      *       description="L'identifiant de l'entreprise.",
      *       required=true,
+     *
      *       @OA\Schema(type="integer")
      *    ),
      *
@@ -96,6 +101,7 @@ final class CustomerController extends AbstractController
      *        in="query",
      *        description="La page courante.",
      *        required=false,
+     *
      *        @OA\Schema(type="integer")
      *    ),
      *
@@ -104,14 +110,17 @@ final class CustomerController extends AbstractController
      *        in="query",
      *        description="Le nombre d'éléments par page.",
      *        required=false,
+     *
      *        @OA\Schema(type="integer")
      *    )
      *
      *    @OA\Response(
      *       response=200,
      *       description="Retourne la liste des clients attachés à une entreprise avec un système de pagination.",
+     *
      *       @OA\JsonContent(
      *          type="array",
+     *
      *          @OA\Items(ref=@Model(type=Customer::class, groups={"customer:read"}))
      *       ),
      *    ),
@@ -133,7 +142,7 @@ final class CustomerController extends AbstractController
         }
 
         // Set the cache id
-        $idCache = sprintf('customer_list_page_%d_limit_%d', $page, $limit);
+        $idCache = \sprintf('customer_list_page_%d_limit_%d', $page, $limit);
 
         return $this->apiService->get($customers, ['customer:read'], $idCache, 'customer_tag');
     }
@@ -151,6 +160,7 @@ final class CustomerController extends AbstractController
      *       in="path",
      *       description="L'identifiant de l'entreprise.",
      *       required=true,
+     *
      *       @OA\Schema(type="integer")
      *    ),
      *
@@ -159,14 +169,17 @@ final class CustomerController extends AbstractController
      *       in="path",
      *       description="L'identifiant du client.",
      *       required=true,
+     *
      *       @OA\Schema(type="integer")
      *    ),
      *
      *    @OA\Response(
      *       response=200,
      *       description="Retourne le détail d'un client attaché à une entreprise.",
+     *
      *       @OA\JsonContent(
      *          type="array",
+     *
      *          @OA\Items(ref=@Model(type=Customer::class, groups={"customer:read"}))
      *       ),
      *    )
@@ -184,7 +197,7 @@ final class CustomerController extends AbstractController
         }
 
         // Set the cache id
-        $idCache = sprintf('customer_detail_%s', $customer->getId());
+        $idCache = \sprintf('customer_detail_%s', $customer->getId());
 
         return $this->apiService->get($customer, ['customer:read'], $idCache, 'customer_tag');
     }
@@ -202,6 +215,7 @@ final class CustomerController extends AbstractController
      *       in="path",
      *       description="L'identifiant de l'entreprise.",
      *       required=true,
+     *
      *       @OA\Schema(type="integer")
      *    ),
      *
@@ -210,6 +224,7 @@ final class CustomerController extends AbstractController
      *       in="path",
      *       description="L'identifiant du client.",
      *       required=true,
+     *
      *       @OA\Schema(type="integer")
      *    ),
      *
@@ -217,7 +232,6 @@ final class CustomerController extends AbstractController
      *      response=204,
      *      description="Supprime le client d'une entreprise.",
      *    ),
-     *
      *    @OA\Response(
      *      response=404,
      *      description="Ce client n'existe pas ou n'est pas attaché à cette entreprise."

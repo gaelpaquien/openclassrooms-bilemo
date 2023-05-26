@@ -19,12 +19,10 @@ final class CustomerFixtures extends Fixture implements DependentFixtureInterfac
 
     public function removeAccents($string): string
     {
-        $search  = ['À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'à', 'á', 'â', 'ã', 'ä', 'å', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ò', 'ó', 'ô', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ'];
+        $search = ['À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'à', 'á', 'â', 'ã', 'ä', 'å', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ò', 'ó', 'ô', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ'];
         $replace = ['A', 'A', 'A', 'A', 'A', 'A', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 'a', 'a', 'a', 'a', 'a', 'a', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y'];
 
-        $string = str_replace($search, $replace, $string);
-
-        return $string;
+        return \str_replace($search, $replace, (string) $string);
     }
 
     public function load(ObjectManager $manager): void
@@ -35,12 +33,11 @@ final class CustomerFixtures extends Fixture implements DependentFixtureInterfac
 
         $this->createCustomer(20, 'company-0', 'password', ['ROLE_ADMIN'], $manager, null);
         $this->createCustomer(21, 'company-0', 'password', ['ROLE_ADMIN'], $manager, 'admin@bilemo.fr');
-        //
 
         $manager->flush();
     }
 
-    public function createCustomer(int $customerId, string $companyReference, string $password, array $roles, ObjectManager $manager, ?string $email=null): void
+    public function createCustomer(int $customerId, string $companyReference, string $password, array $roles, ObjectManager $manager, ?string $email = null): void
     {
         $faker = Factory::create('fr_FR');
 
@@ -49,14 +46,14 @@ final class CustomerFixtures extends Fixture implements DependentFixtureInterfac
         $customer->setFirstName($this->removeAccents($faker->firstName()));
         $customer->setLastName($this->removeAccents($faker->lastName()));
 
-        $email = $email !== null ? $email : strtolower($customer->getFirstName()).'.'.strtolower($customer->getLastName()).'@email.fr';
+        $email = null !== $email ? $email : \strtolower($customer->getFirstName()) . '.' . \strtolower($customer->getLastName()) . '@email.fr';
         $customer->setEmail($email);
 
         $customer->setPassword($this->passwordHasher->hashPassword($customer, $password));
         $customer->setRoles($roles);
-        $customer->setPhoneNumber(0 .\rand(6, 7).\rand(10_000_000, 99_999_999));
+        $customer->setPhoneNumber(0 . \rand(6, 7) . \rand(10_000_000, 99_999_999));
 
-        $this->addReference('customer-'.$customerId, $customer);
+        $this->addReference('customer-' . $customerId, $customer);
 
         $manager->persist($customer);
     }

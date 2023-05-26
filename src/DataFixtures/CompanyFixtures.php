@@ -22,7 +22,7 @@ final class CompanyFixtures extends Fixture
         $company = new Company();
         $company->setName($name);
 
-        $this->addReference('company-'.$countCompany, $company);
+        $this->addReference('company-' . $countCompany, $company);
 
         $manager->persist($company);
     }

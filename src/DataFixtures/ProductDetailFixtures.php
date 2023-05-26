@@ -36,7 +36,7 @@ final class ProductDetailFixtures extends Fixture implements DependentFixtureInt
         ObjectManager $manager
     ): void {
         $productDetail = new ProductDetail();
-        $productDetail->setProduct($this->getReference('product-'.$countProduct));
+        $productDetail->setProduct($this->getReference('product-' . $countProduct));
         $productDetail->setScreenSize($screen_size);
         $productDetail->setStorageCapacity($storage_capacity);
         $productDetail->setOperatingSystem($operating_system);

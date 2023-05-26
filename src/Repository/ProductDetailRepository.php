@@ -23,7 +23,7 @@ final class ProductDetailRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductDetail::class);
     }
 
-    public function save(ProductDetail $entity, bool $flush=false): void
+    public function save(ProductDetail $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -32,7 +32,7 @@ final class ProductDetailRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(ProductDetail $entity, bool $flush=false): void
+    public function remove(ProductDetail $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

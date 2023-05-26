@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query\Expr\Func;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -27,7 +26,7 @@ final class CustomerRepository extends ServiceEntityRepository implements Passwo
         parent::__construct($registry, Customer::class);
     }
 
-    public function save(Customer $entity, bool $flush=false): void
+    public function save(Customer $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -36,7 +35,7 @@ final class CustomerRepository extends ServiceEntityRepository implements Passwo
         }
     }
 
-    public function remove(Customer $entity, bool $flush=false): void
+    public function remove(Customer $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

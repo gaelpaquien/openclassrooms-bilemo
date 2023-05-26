@@ -6,10 +6,10 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use JMS\Serializer\SerializerInterface;
 
 final class APIService
 {
@@ -17,7 +17,7 @@ final class APIService
     {
     }
 
-    public function post(mixed $resource, string $location, array $groups, ?array $tags=null): JsonResponse
+    public function post(mixed $resource, string $location, array $groups, ?array $tags = null): JsonResponse
     {
         if ($tags) {
             $this->cacheService->deleteCache($tags);
@@ -35,7 +35,7 @@ final class APIService
         );
     }
 
-    public function get(mixed $resource, array $groups, ?string $idCache=null, ?string $tag=null): JsonResponse
+    public function get(mixed $resource, array $groups, ?string $idCache = null, ?string $tag = null): JsonResponse
     {
         if (!\is_array($resource) && !\is_object($resource)) {
             throw new \InvalidArgumentException('The resource must be an array or an object');
@@ -53,7 +53,7 @@ final class APIService
         );
     }
 
-    public function delete(object $resource, ?array $tags=null): JsonResponse
+    public function delete(object $resource, ?array $tags = null): JsonResponse
     {
         if (!\is_object($resource)) {
             throw new \InvalidArgumentException('The resource must be an object');
@@ -84,13 +84,16 @@ final class APIService
                 } catch (\Exception) {
                     throw new BadRequestException('Unable to serialize resource with cache');
                 }
+
                 break;
+
             default:
                 try {
                     $jsonResponse = $this->serializer->serialize($resource, 'json', $this->serializerContext::create()->setGroups($groups)->setSerializeNull(true));
                 } catch (\Exception) {
                     throw new BadRequestException('Unable to serialize resource');
                 }
+
                 break;
         }
 

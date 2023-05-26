@@ -23,7 +23,7 @@ final class ProductStockRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductStock::class);
     }
 
-    public function save(ProductStock $entity, bool $flush=false): void
+    public function save(ProductStock $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -32,7 +32,7 @@ final class ProductStockRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(ProductStock $entity, bool $flush=false): void
+    public function remove(ProductStock $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

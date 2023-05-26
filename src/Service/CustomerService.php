@@ -8,12 +8,12 @@ use App\Entity\Customer;
 use App\Entity\CustomerAddress;
 use App\Repository\CompanyRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use JMS\Serializer\SerializerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class CustomerService
@@ -22,7 +22,7 @@ final class CustomerService
     {
     }
 
-    public function createCustomer(Request $request, ?array $tags=null): JsonResponse
+    public function createCustomer(Request $request, ?array $tags = null): JsonResponse
     {
         // Recovers all the data that has been sent
         $content = $request->toArray();
@@ -71,12 +71,14 @@ final class CustomerService
     private function checkCompanyExists(int $companyId): bool
     {
         $company = $this->companyRepository->findOneBy(['id' => $companyId]);
+
         return (bool) $company;
     }
 
     private function checkCustomerExists(string $email): bool
     {
         $customer = $this->em->getRepository(Customer::class)->findOneBy(['email' => $email]);
+
         return (bool) $customer;
     }
 
@@ -88,7 +90,7 @@ final class CustomerService
         $address->setCity($content['address']['city']);
         $address->setPostalCode($content['address']['postal_code']);
         $address->setAddress($content['address']['address']);
-        $address->setAddressDetails(($content['address']['address_details'] ?? null));
+        $address->setAddressDetails($content['address']['address_details'] ?? null);
 
         return $address;
     }
@@ -99,7 +101,7 @@ final class CustomerService
         $addressErrors = $this->validator->validate($address);
         $errors = \array_merge($customerErrors->getIterator()->getArrayCopy(), $addressErrors->getIterator()->getArrayCopy());
 
-        if ($errors !== []) {
+        if ([] !== $errors) {
             $messages = [];
             foreach ($errors as $error) {
                 $property = $error->getPropertyPath();

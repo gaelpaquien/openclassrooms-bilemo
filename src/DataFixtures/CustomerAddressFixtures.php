@@ -26,7 +26,7 @@ final class CustomerAddressFixtures extends Fixture implements DependentFixtureI
         $faker = Factory::create('fr_FR');
 
         $customerAddress = new CustomerAddress();
-        $customerAddress->setCustomer($this->getReference('customer-'.$customerId));
+        $customerAddress->setCustomer($this->getReference('customer-' . $customerId));
         $customerAddress->setCountry('France');
         $customerAddress->setCity($faker->city());
         $customerAddress->setPostalCode(\rand(30000, 95000));

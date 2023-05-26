@@ -18,8 +18,10 @@ final class CacheService
     public function getCache(string $idCache, mixed $resource, string $tag, mixed $groups): mixed
     {
         return $this->cache->get(
-            $idCache, function (ItemInterface $item) use ($resource, $tag, $groups): string {
+            $idCache,
+            function (ItemInterface $item) use ($resource, $tag, $groups): string {
                 $item->tag($tag);
+
                 return $this->serializer->serialize($resource, 'json', $this->serializerContext::create()->setGroups($groups)->setSerializeNull(true));
             }
         );

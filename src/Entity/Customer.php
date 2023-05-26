@@ -10,11 +10,11 @@ use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @Hateoas\Relation(
@@ -26,7 +26,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *    ),
  *    exclusion = @Hateoas\Exclusion(groups = {"customer:read"})
  * )
- *
  * @Hateoas\Relation(
  *    "list",
  *     href = @Hateoas\Route(
@@ -36,7 +35,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *     ),
  *     exclusion = @Hateoas\Exclusion(groups = {"customer:read"})
  * )
- *
  * @Hateoas\Relation(
  *    "delete",
  *    href = @Hateoas\Route(
@@ -46,7 +44,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *    ),
  *    exclusion = @Hateoas\Exclusion(groups = {"customer:read"}, excludeIf = "expr(not is_granted('ROLE_ADMIN'))")
  * )
- *
  * @Hateoas\Relation(
  *    "create",
  *    href = @Hateoas\Route(
@@ -76,14 +73,14 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 50)]
     #[Groups(['customer:read'])]
-    #[Assert\NotBlank(message: "Le prénom est obligatoire")]
-    #[Assert\Length(min: 2, max: 50, minMessage: "Le prénom doit contenir au moins {{ limit }} caractères", maxMessage: "Le prénom doit contenir au maximum {{ limit }} caractères")]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'Le prénom doit contenir au moins {{ limit }} caractères', maxMessage: 'Le prénom doit contenir au maximum {{ limit }} caractères')]
     private ?string $first_name = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['customer:read'])]
-    #[Assert\NotBlank(message: "Le nom est obligatoire")]
-    #[Assert\Length(min: 2, max: 50, minMessage: "Le nom doit contenir au moins {{ limit }} caractères", maxMessage: "Le nom doit contenir au maximum {{ limit }} caractères")]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'Le nom doit contenir au moins {{ limit }} caractères', maxMessage: 'Le nom doit contenir au maximum {{ limit }} caractères')]
     private ?string $last_name = null;
 
     #[ORM\Column(length: 255, unique: true)]
@@ -93,7 +90,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ['ROLE_CUSTOMER'];
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
@@ -115,7 +112,6 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->roles = ['ROLE_CUSTOMER'];
         $this->created_at = new \DateTimeImmutable();
         $this->updated_at = new \DateTimeImmutable();
         $this->customerAddresses = new ArrayCollection();

@@ -30,15 +30,17 @@ final class CustomerFixtures extends Fixture implements DependentFixtureInterfac
     public function load(ObjectManager $manager): void
     {
         for ($i = 0; $i < 20; ++$i) {
-            $this->createCustomer($i, 'company-0', 'password', ['ROLE_CUSTOMER'], $manager);
+            $this->createCustomer($i, 'company-0', 'password', ['ROLE_CUSTOMER'], $manager, null);
         }
 
-        $this->createCustomer(20, 'company-0', 'password', ['ROLE_ADMIN'], $manager);
+        $this->createCustomer(20, 'company-0', 'password', ['ROLE_ADMIN'], $manager, null);
+        $this->createCustomer(21, 'company-0', 'password', ['ROLE_ADMIN'], $manager, 'admin@bilemo.fr');
+        //
 
         $manager->flush();
     }
 
-    public function createCustomer(int $customerId, string $companyReference, string $password, array $roles, ObjectManager $manager): void
+    public function createCustomer(int $customerId, string $companyReference, string $password, array $roles, ObjectManager $manager, ?string $email=null): void
     {
         $faker = Factory::create('fr_FR');
 
@@ -46,7 +48,10 @@ final class CustomerFixtures extends Fixture implements DependentFixtureInterfac
         $customer->setCompany($this->getReference($companyReference));
         $customer->setFirstName($this->removeAccents($faker->firstName()));
         $customer->setLastName($this->removeAccents($faker->lastName()));
-        $customer->setEmail(strtolower($customer->getFirstName()).'.'.strtolower($customer->getLastName()).'@email.fr');
+
+        $email = $email !== null ? $email : strtolower($customer->getFirstName()).'.'.strtolower($customer->getLastName()).'@email.fr';
+        $customer->setEmail($email);
+
         $customer->setPassword($this->passwordHasher->hashPassword($customer, $password));
         $customer->setRoles($roles);
         $customer->setPhoneNumber(0 .\rand(6, 7).\rand(10_000_000, 99_999_999));

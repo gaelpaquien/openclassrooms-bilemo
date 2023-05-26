@@ -21,7 +21,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *     "self",
  *      href = @Hateoas\Route(
  *          "customer_detail",
- *          parameters = { "companyId" = "expr(object.getCompany().getId())", "id" = "expr(object.getId())" },
+ *          parameters = { "companyId" = "expr(object.getCompany().getId())", "customerId" = "expr(object.getId())" },
  *          absolute = true
  *    ),
  *    exclusion = @Hateoas\Exclusion(groups = {"customer:read"})
@@ -41,7 +41,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *    "delete",
  *    href = @Hateoas\Route(
  *          "customer_delete",
- *          parameters = { "companyId" = "expr(object.getCompany().getId())", "id" = "expr(object.getId())" },
+ *          parameters = { "companyId" = "expr(object.getCompany().getId())", "customerId" = "expr(object.getId())" },
  *          absolute = true
  *    ),
  *    exclusion = @Hateoas\Exclusion(groups = {"customer:read"}, excludeIf = "expr(not is_granted('ROLE_ADMIN'))")

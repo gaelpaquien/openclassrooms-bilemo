@@ -84,7 +84,6 @@ final class APIService
                 } catch (\Exception) {
                     throw new BadRequestException('Unable to serialize resource with cache');
                 }
-
                 break;
 
             default:
@@ -93,7 +92,6 @@ final class APIService
                 } catch (\Exception) {
                     throw new BadRequestException('Unable to serialize resource');
                 }
-
                 break;
         }
 

@@ -120,7 +120,7 @@ final class CustomerService
         return $this->urlGenerator->generate(
             'customer_detail',
             [
-                'id' => $customer->getId(),
+                'customerId' => $customer->getId(),
                 'companyId' => $customer->getCompany()->getId(),
             ]
         );

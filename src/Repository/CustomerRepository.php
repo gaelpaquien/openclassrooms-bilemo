@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Func;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -44,7 +45,7 @@ final class CustomerRepository extends ServiceEntityRepository implements Passwo
         }
     }
 
-    public function findAllWithPaginationByCompany(int $companyId, int $page, int $limit)
+    public function findAllByCompanyWithPagination(int $companyId, int $page, int $limit)
     {
         return $this->createQueryBuilder('c')
             ->addSelect('c')
@@ -54,6 +55,18 @@ final class CustomerRepository extends ServiceEntityRepository implements Passwo
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findByCompany(int $companyId, int $customerId)
+    {
+        return $this->createQueryBuilder('c')
+            ->addSelect('c')
+            ->where('c.company = :companyId')
+            ->andWhere('c.id = :customerId')
+            ->setParameter('companyId', $companyId)
+            ->setParameter('customerId', $customerId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**

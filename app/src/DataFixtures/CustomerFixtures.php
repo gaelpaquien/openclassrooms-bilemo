@@ -46,7 +46,7 @@ final class CustomerFixtures extends Fixture implements DependentFixtureInterfac
         $customer->setFirstName($this->removeAccents($faker->firstName()));
         $customer->setLastName($this->removeAccents($faker->lastName()));
 
-        $email = null !== $email ? $email : \strtolower($customer->getFirstName()) . '.' . \strtolower($customer->getLastName()) . '@email.fr';
+        $email = null !== $email ? $email : \strtolower($customer->getFirstName()) . 'DataFixtures' . \strtolower($customer->getLastName()) . '@email.fr';
         $customer->setEmail($email);
 
         $customer->setPassword($this->passwordHasher->hashPassword($customer, $password));

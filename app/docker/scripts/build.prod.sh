@@ -18,6 +18,7 @@ composer dump-env prod || exit 1
 echo "Setting up database...."
 php bin/console doctrine:database:drop --env=prod --force --if-exists --no-interaction || exit 1
 php bin/console doctrine:database:create --env=prod --no-interaction || exit 1
+php bin/console doctrine:schema:update --force --env=prod || exit 1
 php bin/console doctrine:migrations:migrate --env=prod --no-interaction || exit 1
 
 echo "Generating JWT keys..."

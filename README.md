@@ -6,7 +6,7 @@ This project was carried out as part of a training course. Below you will find t
 
 ## Setting up
 
-1. **Clone the repository on the main branch**
+1. **Clone the repository on the master branch**
 
 2. **Create the .env.local file and replace the values of the .env origin file**
 
